@@ -1,0 +1,8 @@
+{
+  "schema_version": "observer-project-v1",
+  "protocol": "jsonl-v2",
+  "image": "python:3.12-slim",
+  "working_directory": ".",
+  "build": [],
+  "run": ["python3", "-u", "agent/minimal_agent.py"]
+}

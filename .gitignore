@@ -1,0 +1,32 @@
+# ===== 官方/克隆参考资料（可重新获取，不入库）=====
+/platform/
+/observer-project-example/
+/platform_mirror/
+
+# ===== 工作流状态与基准输出（可再生）=====
+/.workflow/
+/wf_out/
+/wf_smoke/
+/agent-observer-starter-kit/wf_out/
+
+# 实验输出目录（decisions.csv / workflow_result.json / 回放，每轮数百 MB）
+/agent-observer-starter-kit/*_output/
+/agent-observer-starter-kit/run_output/
+/agent-observer-starter-kit/scratch/
+
+# 生成的测试场景（make_scenario.py 可按种子复现：comp-like 4242 / comp-like-b 777 / comp-ano 999 / dev-fortnight 2026）
+/agent-observer-starter-kit/scenarios/comp-like/
+/agent-observer-starter-kit/scenarios/comp-like-b/
+/agent-observer-starter-kit/scenarios/comp-ano/
+/agent-observer-starter-kit/scenarios/dev-fortnight/
+
+# 入门包内除 agent/ 外均为官方原样内容（完整原件见 agent-observer-starter-kit.zip）
+/agent-observer-starter-kit/*
+!/agent-observer-starter-kit/agent/
+!/agent-observer-starter-kit/agent/**
+
+# ===== 机器与密钥 =====
+/.zcode/
+**/__pycache__/
+**/.env
+!**/.env.example
