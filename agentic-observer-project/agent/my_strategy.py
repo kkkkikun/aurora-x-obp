@@ -265,6 +265,18 @@ def _detector_init_hook(self, initial_publication):
         slot_dur = int(cal.get("slot_duration_seconds") or 0)
         if slot_dur > 0:
             _S["slot_seconds"] = slot_dur
+        # 任务卡自适应：分区清单与评分常数一律从官方 initialize 合约读取（E/F/G/H 未知卡的泛化前提）
+        region_ids = (initial_publication.get("tile_catalog") or {}).get("region_ids") or []
+        if region_ids:
+            _S["regions"] = [str(r) for r in region_ids]
+        sc = (initial_publication.get("scoring_contract") or {}).get("score_config") or {}
+        if sc.get("program_bonus"):
+            _S["program_bonus"] = {str(k): float(v) for k, v in sc["program_bonus"].items()}
+        tags = sc.get("anomaly_tags") or {}
+        if tags.get("nova_factor") is not None:
+            _S["nova_factor"] = float(tags["nova_factor"])
+        if tags.get("reddening_factor") is not None:
+            _S["red_factor"] = float(tags["reddening_factor"])
     except Exception:  # noqa: BLE001
         pass
 
@@ -454,6 +466,19 @@ def _rise_factor(raw_map, tile_id, now, exptime, exponent):
 REQUIRED_RATE_FLOOR = 0.5
 
 
+def _bonus_of(program):
+    """项目加成从官方评分合约读取（任务卡可变），回退内置默认。"""
+    return float(_S.get("program_bonus", {}).get(program, _BONUS.get(program, 0.0)))
+
+
+def _nova_factor():
+    return float(_S.get("nova_factor", NOVA_FACTOR))
+
+
+def _red_factor():
+    return float(_S.get("red_factor", RED_FACTOR))
+
+
 def _jain_evenness(counts, n_regions):
     s = sum(counts.values())
     q = sum(v * v for v in counts.values())
@@ -602,15 +627,17 @@ def choose_action(candidates, snapshot, memory):
     for c in candidates:
         tile_region.setdefault(c["tile_id"], c["region_id"])
         _S["tile_region"].setdefault(c["tile_id"], c["region_id"])
-    counts = {f"R{i:02d}": 0 for i in range(8)}
+    region_list = _S.get("regions") or sorted({r for r in tile_region.values() if r})
+    counts = {r: 0 for r in region_list}
     for tile_id in completed:
         region = tile_region.get(tile_id)
         if region is not None:
             counts[region] = counts.get(region, 0) + 1
+    n_regions = max(1, len(region_list))
     base_so_far = sum(memory.get("tile_base", {}).get(t, 0.0) for t in completed)
     s_total = sum(counts.values())
     q_total = sum(v * v for v in counts.values())
-    e_now = _jain_evenness(counts, 8)
+    e_now = _jain_evenness(counts, n_regions)
 
     cur_night = night_id_of(snapshot)
     suspects = set()          # nova 类强嫌疑：rel >= 1.30 的读数几乎必真，值得花一个时隙确认
@@ -696,18 +723,19 @@ def choose_action(candidates, snapshot, memory):
             if tid in _S["reported_nova"]:
                 v = _tile_value(memory, c)
                 if v:
-                    potential = v * float(c["combined_quality"]) * (1.0 + _BONUS.get(c["program"], 0.0)) * NOVA_FACTOR * boost_f
+                    potential = v * float(c["combined_quality"]) * (1.0 + _bonus_of(c["program"])) * _nova_factor() * boost_f
                     banked = _S["banked"].get(tid, 0.0)
                     gain = max(gain, potential - banked)
             rate = gain / max(1.0, c["nominal_exptime_seconds"])
         else:
-            marginal = gain + coverage_weight * (base_so_far * ((s_total + 1) ** 2 / (8 * (q_total + 2 * counts.get(c["region_id"], 0) + 1)) - e_now)
-                                                 + sci * min(1.0, (s_total + 1) ** 2 / (8 * (q_total + 2 * counts.get(c["region_id"], 0) + 1))))
+            e_after_c = (s_total + 1) ** 2 / (n_regions * (q_total + 2 * counts.get(c["region_id"], 0) + 1))
+            marginal = gain + coverage_weight * (base_so_far * (e_after_c - e_now)
+                                                 + sci * min(1.0, e_after_c))
             factor = 1.0
             if tid in _S["reported_nova"]:
-                factor *= NOVA_FACTOR
+                factor *= _nova_factor()
             elif tid in _S["reported_red"]:
-                factor *= RED_FACTOR
+                factor *= _red_factor()
             bonus = 60.0 if tid in suspects else 0.0
             rate = (marginal * factor + bonus) / max(1.0, c["nominal_exptime_seconds"])
         if best_rate is None or rate > best_rate:
