@@ -30,3 +30,6 @@
 **/__pycache__/
 **/.env
 !**/.env.example
+
+# ===== 对外提交仓库的工作副本（独立 git，推送到 GitHub）=====
+/submit-repo/

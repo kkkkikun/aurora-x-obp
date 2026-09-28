@@ -9,6 +9,7 @@
 | `agent-observer-starter-kit/agent/` | **策略代码（核心资产）**——`my_strategy.py` 是主战场，v6.11 定版 | ✅ |
 | `agentic-observer-project/` | 正式赛提交项目（manifest + agent） | ✅ |
 | `agent-observer-project.zip` | 实际提交的 ZIP（由上一行构建） | ✅ |
+| `agentic-observer-project/README.md` + `sync_submit_repo.sh` | 对外提交仓库的权威源与同步脚本 → `github.com/kkkkikun/aurora-x-obp`（public，练习赛/正式赛提交链接） | ✅ |
 | `agent-observer-starter-kit.zip` | 官方入门包原件（策略之外的 kit 状态由此锁定） | ✅ |
 | `比赛调研报告.md` / `下一步行动指南.md` / `正式赛备战计划.md` / `项目提交预演清单.md` | 调研与作战文档 | ✅ |
 | `reference/` | 官网规则/文档快照（2026-09-25，比 GitHub 仓库新） | ✅ |
