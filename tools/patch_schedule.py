@@ -103,15 +103,20 @@ def main() -> int:
             continue
         first = starts[0][0]
         limit = first + args.L * NIGHT_SLOTS
-        if t in tile_req_tagged and t in agent_req_of_tile:
-            # 请求天区：替换窗口 = agent 实际满足的那个请求的 [发布, 截止)——
-            # 保持 agent 的请求-天区满足结构不变（换成别的请求会打破多天区请求的完成性）
-            rid, issued, deadline = agent_req_of_tile[t]
-            iss_i = max((i for i, ts in enumerate(slot_ts) if ts < issued), default=0)
-            dl_i = max((i for i, ts in enumerate(slot_ts) if ts < deadline), default=len(slots) - 1)
-            window = [x for x in starts if iss_i <= x[0] <= dl_i]
+        if t in tile_req_tagged:
+            # 请求天区：每行的标注请求相互独立（一次标注=一次独立访问，重复观测零罚分），
+            # 替换窗口 = 该 tile 在 agent 行里标注请求的 [发布, 截止)；放不下保留原行
+            rid0 = next((r["request_id"] for r in agent_rows
+                         if r["tile_id"] == t and r["request_id"]), "")
+            if rid0 and rid0 in req_meta:
+                iss, dl = req_meta[rid0]
+                lo_i = max((i for i, ts in enumerate(slot_ts) if ts < iss), default=0)
+                hi_i = max((i for i, ts in enumerate(slot_ts) if ts < dl), default=len(slots) - 1)
+                window = [x for x in starts if lo_i <= x[0] <= hi_i]
+            else:
+                window = []
             if not window:
-                continue                    # 该请求窗口内无可起拍点：保留 agent 原观测
+                continue                    # 请求窗口内无合法起拍：保留 agent 原观测
             tile_window[t] = window
             window_q = max(q for _, q in window)
         else:
