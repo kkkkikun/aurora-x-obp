@@ -85,6 +85,11 @@ from datetime import date, datetime, timedelta
 
 import anomaly_detection as _ad
 
+try:
+    import llm_planner as _lp
+except Exception:  # noqa: BLE001
+    _lp = None
+
 
 def _env_float(name, default):
     try:
@@ -339,6 +344,19 @@ def _harvest_publications(snapshot):
             _S["night_windows_req"] = cache_req
             _S["night_windows_meta"] = cache_meta
             _S["night_windows_for"] = night
+        # LLM 任务规划（每夜 ≤1 次；无 AURORA_LLM_PROVIDER 时整层惰性零行为差异）
+        try:
+            if _lp is not None:
+                tiles_known = set(_S.get("tile_avail") or {})
+                regions_known = set(_S.get("regions") or set())
+                if not regions_known:
+                    regions_known = {t.region_id for t in _S.get("tile_objs", [])} or None
+                if tiles_known and regions_known:
+                    plan = _lp.night_plan(snapshot, memory, tiles_known, regions_known)
+                    if plan:
+                        memory["plan"] = plan
+        except Exception as exc:  # noqa: BLE001  规划失败只丢计划，绝不影响决策流
+            print(f"llm night-plan fallback after {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
     weekly = snapshot.get("weekly")
     if isinstance(weekly, dict) and night:
         for row in (weekly.get("tile_windows") or []):
@@ -996,6 +1014,29 @@ def choose_action(candidates, snapshot, memory):
     #    同样解除；3 天未获答复自动解除（响应 1 天+修复 2 天已到，等下去没有意义）。
     pool = candidates
     try:
+        # LLM 计划自适应：fault_status 首次公布 / nova 确认 → 重规划（≤3 次）
+        if _lp is not None and mechanics:
+            status_now = snapshot.get("fault_status")
+            ev_key = None
+            if isinstance(status_now, dict) and status_now.get("status") == "fault":
+                ev_key = "fault:" + str(status_now.get("event_id", ""))
+            elif _S["reported_nova"] and "nova:" not in _S:
+                ev_key = "nova:" + ",".join(sorted(_S["reported_nova"])[:3])
+                _S["nova:"] = True
+            if ev_key and _S.get("last_replan_key") != ev_key:
+                _S["last_replan_key"] = ev_key
+                tiles_known = set(_S.get("tile_avail") or {})
+                regions_known = set(_S.get("regions") or set())
+                detail = {"event": ev_key}
+                if isinstance(status_now, dict) and status_now.get("status") == "fault":
+                    detail["scope"] = status_now.get("spatial_scope_payload")
+                    detail["repair_by"] = status_now.get("repair_complete_utc")
+                rev = _lp.replan_event("anomaly", detail, memory, tiles_known, regions_known)
+                if rev:
+                    memory["plan_revision"] = rev
+    except Exception as exc:  # noqa: BLE001
+        print(f"llm replan fallback after {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
+    try:
         pending_region = _S.get("pending_fault_region")
         if pending_region:
             status = snapshot.get("fault_status")
@@ -1054,11 +1095,13 @@ def choose_action(candidates, snapshot, memory):
                 gain = gain - sci * (1.0 - boost_f)
                 sci = sci * boost_f
         if tid in completed:
-            # 重复观测：只有已上报 nova 才有价值（按最高分入账）
-            if tid in _S["reported_nova"]:
+            # 重复观测价值：mechanics 下按最高分入账——当前质量能把入账抬高多少就是净赚；
+            # 非 mechanics 只有已上报 nova 才有（且语义不同：仅访问计数）
+            if mechanics or tid in _S["reported_nova"]:
                 v = _tile_value(memory, c)
                 if v:
-                    potential = v * float(c["combined_quality"]) * (1.0 + _bonus_of(c["program"])) * _nova_factor() * boost_f
+                    tf = _nova_factor() if tid in _S["reported_nova"] else 1.0
+                    potential = v * float(c["combined_quality"]) * (1.0 + _bonus_of(c["program"])) * tf * boost_f
                     banked = _S["banked"].get(tid, 0.0)
                     gain = max(gain, potential - banked)
             rate = gain / max(1.0, c["nominal_exptime_seconds"])
@@ -1072,6 +1115,15 @@ def choose_action(candidates, snapshot, memory):
             elif tid in _S["reported_red"]:
                 factor *= _red_factor()
             bonus = 60.0 if tid in suspects else 0.0
+            # LLM 夜计划加权：priority_tiles +80、focus_regions 内 +40（计划只动权重不产生动作）
+            plan = memory.get("plan") or {}
+            rev = memory.get("plan_revision") or {}
+            if tid in (plan.get("priority_tiles") or []) or tid in (rev.get("boost_tiles") or []):
+                bonus += 80.0
+            elif c["region_id"] in (rev.get("avoid_regions") or []):
+                bonus -= 120.0
+            elif c["region_id"] in (plan.get("focus_regions") or []) or c["region_id"] in (rev.get("focus_regions") or []):
+                bonus += 40.0
             rate = (marginal * factor + bonus) / max(1.0, c["nominal_exptime_seconds"])
         if best_rate is None or rate > best_rate:
             best, best_rate = c, rate
