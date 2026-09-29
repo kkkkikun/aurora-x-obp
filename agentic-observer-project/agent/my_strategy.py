@@ -78,11 +78,19 @@
   已知局限: 30 夜场景每块天区平均 0.73 次读数，标签转化靠运气；reddening 与漂移灰区
   重叠只做被动检测；正式赛（W>0）的质量择时（与覆盖权衡）尚未实现。
 """
+import os
 import statistics
 import sys
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import anomaly_detection as _ad
+
+
+def _env_float(name, default):
+    try:
+        return float(os.environ.get(name, "") or default)
+    except (TypeError, ValueError):
+        return float(default)
 
 # ---------------- 异常检测状态（模块级，跨决策持久） ----------------
 _S = {
@@ -117,6 +125,7 @@ CONFIRM_BONUS = 90.0    # 一次确认读数的期望奖励（P(确认)×100 的
 NOVA_FACTOR = 1.5
 RED_FACTOR = 0.8
 _BONUS = {"DARK": 0.25, "BRIGHT": 0.15, "BACKUP": 0.08}
+_GATE_MODE = "w"
 
 
 def _night_ref(night):
@@ -277,6 +286,20 @@ def _detector_init_hook(self, initial_publication):
             _S["nova_factor"] = float(tags["nova_factor"])
         if tags.get("reddening_factor") is not None:
             _S["red_factor"] = float(tags["reddening_factor"])
+        # v7 择优等待需要的天区可用期与日历边界（tile_catalog.csv_row 自带）
+        _S["first_night"] = None
+        _S["last_night"] = None
+        try:
+            if cal.get("first_night"):
+                _S["first_night"] = date.fromisoformat(str(cal["first_night"])[:10])
+            if cal.get("last_night"):
+                _S["last_night"] = date.fromisoformat(str(cal["last_night"])[:10])
+        except ValueError:
+            pass
+        avail = {}
+        for t in (initial_publication.get("tile_catalog") or {}).get("tiles") or []:
+            avail[str(t.get("tile_id"))] = (t.get("available_from_utc"), t.get("available_until_utc"))
+        _S["tile_avail"] = avail
     except Exception:  # noqa: BLE001
         pass
 
@@ -503,6 +526,302 @@ def _tile_value(memory, c):
     return vmap.get(tid)
 
 
+def _choose_quality(candidates, snapshot, memory, reserve_ctx, reserve_fit_rem, top):
+    """v7 择优等待（W=0 且非 mechanics）：每块天区只有**第一次完成的曝光**入账
+    （scoring_core.apply_decision：非 mechanics 下重复观测 = duplicate_tile 无效，
+    且完成前不入账），因此得分完全由「那一次的综合质量」决定——
+        base = Σ tile_value × (大气质量 × 月光因子)，质量 = 效率×透射×天光/(seeing×airmass)
+    实测（dev-reference，180 夜）：贪心首拍 mean_q=0.555（airmass 均值 1.44），
+    而单块 oracle mean_q=1.210、榜一实测 1.0986（15469.61/Σtile_value 14081.10）。
+    天空 95% 时隙可观测、每块中位 2456 个合法起拍点 → 缺的不是机会是门槛。
+
+    策略：按「该天区剩余可用夜数占比 frac」给质量阈值——
+    还有很多夜就死等好质量（等待罚金仅 0.001/s = 0.9/时隙），机会将尽才放松，
+    最后一夜无条件拍（防 1000/100 终局罚分）。请求带截止期，临近即拍。
+    """
+    if not candidates:
+        return None
+    now = _parse_utc((snapshot.get("cursor") or {}).get("timestamp_utc"))
+    night_id = (snapshot.get("cursor") or {}).get("night_id") or ""
+    # 日期基准一律用**时间戳的 UTC 日期**：天区可用期/窗口都是按时间戳给的，
+    # 而 night_id 记的是「夜的编号日期」（夜从 02:00 UTC 跨到次日 12:00 UTC），
+    # 用 night_id 会让「最后一夜」判定整整晚一天 → T00001 这类 14 夜短窗口天区漏拍。
+    now_date = now.date() if now is not None else None
+
+    # ---- 双门阈值：天气因子 W + 中天几何 ----
+    # 质量 = w / airmass，其中 w = 效率×透射×天光/seeing × 月光因子（与几何无关）。
+    # 实测 dev-reference：w 的 p50=0.662、p90=0.981、p99=1.263；各天区中天 airmass
+    # 中位 1.084、最差 1.870。用绝对 q 阈值会把「中天 airmass 高」的天区永远饿死
+    # （T00002 的 q 天花板只有 0.805），所以阈值改在 w 上（天气好坏人人平等），
+    # 几何单独用「airmass ≤ 当夜 best_airmass × 系数」把关 → 两门都过才拍，
+    # 拍的时候仍按公开收益排序。剩余可用夜数不足时按档放松 w 阈值（防漏拍）。
+    global _GATE_MODE
+    _GATE_MODE = (os.environ.get("AURORA_GATE") or "w").strip().lower()
+    w_hi = _env_float("AURORA_W", 0.90)
+    w_step = _env_float("AURORA_W_STEP", 0.15)
+    w_floor = _env_float("AURORA_W_FLOOR", 0.55)
+    geo_slack = _env_float("AURORA_GEO", 1.15)
+    q_floor = _env_float("AURORA_Q_FLOOR", 0.0)
+    req_slack = _env_float("AURORA_Q_REQ_SLACK", 0.15)
+    urgent_days = _env_float("AURORA_REQ_URGENT", 5.0)
+
+    deadlines = {}
+    for req in snapshot.get("active_requests") or []:
+        dl = _parse_utc(req.get("deadline_utc"))
+        if dl is not None:
+            deadlines[str(req.get("request_id"))] = dl
+
+    geo_by_tile = {}
+    for sc_row in snapshot.get("candidate_tiles") or []:
+        geo_by_tile.setdefault(str(sc_row.get("tile_id")), sc_row.get("geometry") or {})
+
+    # 日历压力守门（沿用 v6.4 松弛门）：剩余夜×40时隙 不足以覆盖剩余天区×12 时，
+    # 说明没有挑剔的余地——直接退回公开排序，避免短场景（14 夜/7 夜）漏拍。
+    night_count = _S.get("night_count") or 0
+    tile_count = _S.get("tile_count") or 0
+    progress = snapshot.get("progress") or {}
+    completed = set(progress.get("completed_tile_ids") or [])
+    if night_count and tile_count:
+        seq = _S.setdefault("night_seq", {})
+        if night_id and night_id not in seq:
+            seq[night_id] = len(seq)
+        nights_left = night_count - (seq.get(night_id, 0) + 1)
+        tiles_left = tile_count - len(completed)
+        if nights_left * 40 < tiles_left * _env_float("AURORA_PRESSURE", 12.0):
+            _remember(memory, top)
+            return top
+
+    last_night = _S.get("last_night")
+    avail_map = _S.get("tile_avail") or {}
+
+    def frac_of(tile_id):
+        """剩余可用日历占比（按时间戳日期；无信息时返回 1.0 = 最挑剔）。"""
+        if now_date is None:
+            return 1.0
+        raw = avail_map.get(tile_id)
+        end = None
+        if raw and raw[1]:
+            try:
+                end = date.fromisoformat(str(raw[1])[:10])
+            except ValueError:
+                end = None
+        if last_night is not None:
+            last_day = last_night + timedelta(days=1)   # 最后一夜的时间戳落在次日
+            if end is None or end > last_day:
+                end = last_day
+        if end is None:
+            return 1.0
+        nights_left = (end - now_date).days + 1
+        if nights_left <= 1:
+            return 0.0                                    # 最后一夜：无条件拍
+        start = None
+        if raw and raw[0]:
+            try:
+                start = date.fromisoformat(str(raw[0])[:10])
+            except ValueError:
+                start = None
+        if start is None:
+            first_night = _S.get("first_night")
+            if first_night is not None:
+                start = first_night + timedelta(days=1)
+        total = (end - start).days + 1 if start else max(nights_left, 1)
+        return nights_left / max(total, 1)
+
+    # 放松基准 = 该天区**剩余可用夜数占比**（frac_of）：实测比「距首次可拍的夜数」更好——
+    # 后者会让天区在 L 夜后一路掉到地板价（dev-reference base 10009→8356），而按可用期占比
+    # 让 180 夜天区前 99 夜都保持高门槛（base 10009、罚分 1628），短窗口天区自然提前放松。
+    def w_gate_for(tile_id):
+        frac = frac_of(tile_id)
+        if frac >= 1.0:
+            # 等待窗口已用尽 → 再看该天区自身可用期是否也快结束（提前进入地板价）
+            frac = min(frac, max(frac_of(tile_id), 0.0))
+        if frac >= 0.55:
+            return w_hi
+        if frac >= 0.30:
+            return w_hi - w_step
+        if frac >= 0.12:
+            return w_hi - 2 * w_step
+        if frac >= 0.04:
+            return w_hi - 3 * w_step
+        return w_floor
+
+    def geo_ok_for(tile_id, c):
+        """几何门：要求已接近当夜中天（airmass ≤ best_airmass×slack）。
+        两种情况必须放行，否则会把天区饿死：
+          1) 最佳时刻已过（中天之后 airmass 只会变差，继续等没有意义）；
+          2) 窗口即将关闭（等不到更好的几何了）。"""
+        rows = _S.get("night_windows_meta", {}).get(tile_id)
+        if not rows:
+            return True
+        geo = geo_by_tile.get(tile_id) or {}
+        try:
+            am = float(geo.get("airmass") or 0.0)
+        except (TypeError, ValueError):
+            am = 0.0
+        if am <= 0:
+            return True
+        try:
+            best_am = min(r[3] for r in rows if r and r[3])
+        except Exception:  # noqa: BLE001
+            return True
+        if am <= best_am * geo_slack:
+            return True
+        if now is None:
+            return True
+        # 已过中天：放行
+        past_best = any(r[2] is not None and now >= r[2] for r in rows if r)
+        if past_best:
+            return True
+        # 窗口将闭：放行
+        exposure = float(c.get("nominal_exptime_seconds") or 0.0)
+        closing_soon = any(r[1] is not None and (r[1] - now).total_seconds() <= 1.5 * exposure + 900
+                           for r in rows if r)
+        return closing_soon
+
+    passing, urgent = [], []
+    for c in candidates:
+        q = float(c.get("combined_quality") or 0.0)
+        if q <= 0.0:
+            continue
+        tid = str(c["tile_id"])
+        geo = geo_by_tile.get(tid) or {}
+        try:
+            am = float(geo.get("airmass") or 0.0)
+        except (TypeError, ValueError):
+            am = 0.0
+        w = q * am if am > 0 else q
+        if not geo_ok_for(tid, c):
+            continue
+        if q < q_floor:
+            continue
+        req_id = str(c.get("request_id") or "")
+        if frac_of(tid) <= 0.0:
+            passing.append(c)               # 该天区最后一夜：无条件拍，防 1000/100 终局罚分
+            continue
+        gate = w_gate_for(tid)
+        # ---- v7.2 相对质量门（FLEXIBLE）：q ≥ ρ×该天区历史最大 q（预热 K 夜后启用）----
+        # 每块天区只入账第一次曝光 → 得分由那一次的质量决定。天气是站点级的：
+        # 好夜多块天区同时过门、坏夜集体等待（等待罚金 0.9/时隙，预算内）。
+        # 绝对 w 门的问题：把「高天花板天区」（可到 q≥1.2）和「低天花板天区」
+        # （T00002 上限 0.805）用同一把 w 尺子量——前者拍早了，后者仍被饿。
+        # 相对门按各自上限 ρ 比例设bar；预热期只积累不拍，避免首夜低bar锁死质量。
+        seen = _S.setdefault("q_seen", {})
+        ent = seen.setdefault(tid, [0.0, 0])       # [max_q, seen_nights]
+        if q > ent[0]:
+            ent[0] = q
+        # 记录出现夜数（每夜一次）
+        if len(ent) < 3:
+            ent.append(night_id)
+            ent[1] = 1
+        elif ent[2] != night_id:
+            ent[1] += 1
+            ent[2] = night_id
+        warm_k = _env_float("AURORA_WARM_K", 8.0)
+        rel_bar = _env_float("AURORA_REL_BAR", 0.80)
+        absfloor = _env_float("AURORA_ABS_FLOOR", 0.55)
+        is_required = str(c.get("scheduling_class")) == "REQUIRED"
+        dl0 = deadlines.get(req_id) if req_id else None
+        urgent_now = dl0 is not None and now is not None and (dl0 - now).total_seconds() <= urgent_days * 86400
+        if not is_required and ent[1] >= warm_k and ent[0] > 0:
+            # ---- v7.3 相对质量指派（q_rel 贪心）----
+            # 榜首画像（mean_q 0.98 / 62 夜拍完 / 罚 2228）不是「每块天区等自己的记录夜」，
+            # 而是全局指派：每夜拍「此刻相对质量 q/max_seen 最高的天区」。
+            # q_rel = q / 该天区历史最大 q —— 低天花板天区轻松到 0.9，高天花板天区只在
+            # 顶级夜过线；站点级天气让好夜多块同过、坏夜集体等待（罚金预算内）。
+            if req_id and urgent_now:
+                urgent.append(c)              # 截止期临近：无条件拍（必须在此处，之前的 continue 会让它不可达）
+                continue
+            bar = rel_bar
+            if req_id and dl0 is not None and now is not None:
+                # 请求天区按截止期临近度递减 bar：远期按质量择机，临期放松，urgent 兜底
+                dl_days = (dl0 - now).total_seconds() / 86400.0
+                if 10 < dl_days <= 21:
+                    bar *= 0.93
+                elif urgent_days < dl_days <= 10:
+                    bar *= 0.85
+            # 只在「已过当夜中天」后出手：过峰后 q 单调下降，首个达标时隙就是本夜最好价
+            at_peak = False
+            if now is not None:
+                for r in _S.get("night_windows_meta", {}).get(tid) or []:
+                    if r[2] is not None and now >= r[2]:
+                        at_peak = True
+                        break
+            q_rel = q / ent[0]
+            if q_rel >= bar and q >= absfloor and at_peak:
+                c["_q_rel"] = q_rel
+                passing.append(c)
+            continue
+        # REQUIRED / 请求 / 预热期：沿用 w 门 + 梯度放松（保完成度）
+        if _GATE_MODE == "q":
+            if q < gate:
+                continue
+            if req_id:
+                dl = deadlines.get(req_id)
+                if dl is not None and now is not None and (dl - now).total_seconds() <= urgent_days * 86400:
+                    urgent.append(c)
+                    continue
+                if q < max(w_floor, gate - req_slack):
+                    continue
+            passing.append(c)
+            continue
+        if req_id and urgent_now:
+            urgent.append(c)                  # 截止期临近：无条件拍
+            continue
+        if req_id:
+            continue                          # 未到 urgent 且没过相对门：继续等更好的夜
+        if w >= gate:
+            passing.append(c)
+
+    pool = urgent or passing
+    if not pool:
+        if os.environ.get("AURORA_Q_DEBUG"):
+            scored = []
+            for c in candidates:
+                tid = str(c["tile_id"])
+                geo = geo_by_tile.get(tid) or {}
+                try:
+                    am = float(geo.get("airmass") or 0.0)
+                except (TypeError, ValueError):
+                    am = 0.0
+                q = float(c.get("combined_quality") or 0.0)
+                scored.append((q * am if am > 0 else q, am, tid, w_gate_for(tid)))
+            best = max(scored)
+            print(f"QDBG wait  n_cand={len(candidates)} best_w={best[0]:.3f} am={best[1]:.3f} "
+                  f"tile={best[2]} gate={best[3]:.3f} urgent={len(urgent)} night={night_id}",
+                  file=sys.stderr, flush=True)
+        return None
+    if reserve_fit_rem is not None:
+        fitted = [c for c in pool
+                  if float(c["nominal_exptime_seconds"] or 0.0) <= reserve_fit_rem + 0.5]
+        if fitted:
+            pool = fitted
+    if (_env_str("AURORA_PICK", "rel") or "rel").lower() == "rel":
+        pick = max(pool, key=lambda c: (c.get("_q_rel", 0.0),
+                                        c.get("estimated_gain_per_second") or 0.0))
+    else:
+        pick = max(pool, key=lambda c: (c.get("estimated_gain_per_second") or 0.0,
+                                        c.get("estimated_total_gain") or 0.0))
+    if urgent and pick not in urgent:
+        pick = max(urgent, key=lambda c: (c.get("estimated_gain_per_second") or 0.0,
+                                          c.get("estimated_total_gain") or 0.0))
+    q = float(pick.get("combined_quality") or 0.0)
+    pgeo = geo_by_tile.get(str(pick["tile_id"])) or {}
+    try:
+        p_am = float(pgeo.get("airmass") or 0.0)
+    except (TypeError, ValueError):
+        p_am = 0.0
+    pick["reason"] = (f"quality gate v7 w={q * p_am if p_am > 0 else q:.2f} q={q:.2f} "
+                      f"gate={w_gate_for(str(pick['tile_id'])):.2f}" +
+                      (" urgent request" if pick in urgent else ""))
+    if os.environ.get("AURORA_Q_DEBUG"):
+        print(f"QDBG shoot n_cand={len(candidates)} pick_q={q:.3f} am={p_am:.3f} "
+              f"w={q * p_am if p_am > 0 else q:.3f} gate={w_gate_for(str(pick['tile_id'])):.3f} "
+              f"urgent={len(urgent)} pass={len(passing)} night={night_id}",
+              file=sys.stderr, flush=True)
+    _remember(memory, pick)
+    return pick
+
+
 def choose_action(candidates, snapshot, memory):
     if not candidates:
         return None
@@ -549,6 +868,22 @@ def choose_action(candidates, snapshot, memory):
     except Exception:  # noqa: BLE001
         reserve_ctx = None
 
+    # v7 路由：宽松场景（W=0 且非 mechanics）改走「择优等待」。
+    # 这类场景每块天区只入账第一次完成的曝光（重复观测 = 无效），
+    # 所以 base/bonus 完全由那一次的质量决定 → 质量阈值 + 剩余机会放松。
+    # 覆盖型（W>0）与异常型（mechanics）场景保持 v6.11 行为不变。
+    # 短场景（夜数 < AURORA_V7_MIN_NIGHTS，默认 30）不走 v7：实测 14 夜 dev-fortnight
+    # 走 v7 会漏 T00041（-1000）与 flexible 配额（-400），7 夜 demo-week 也无择时余地；
+    # 这些场景沿用 v6.4 的「REQUIRED 硬优先 + 几何择时」。
+    if (coverage_weight <= 0 and not mechanics
+            and (_S.get("night_count") or 0) >= _env_float("AURORA_V7_MIN_NIGHTS", 30.0)):
+        try:
+            pick = _choose_quality(candidates, snapshot, memory, reserve_ctx, reserve_fit_rem, top)
+        except Exception as exc:  # noqa: BLE001  任何异常回退到公开排序，绝不等待成灾
+            print(f"quality gate fallback after {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
+            return top
+        return pick
+
     # 1) 未观测 REQUIRED 硬优先（预留期间只允许贴合曝光；末班车者最高优先）
     best_required, best_key = None, None
     for c in candidates:
@@ -588,7 +923,7 @@ def choose_action(candidates, snapshot, memory):
                 seq[nid] = len(seq)
             nights_left = night_count - (seq.get(nid, 0) + 1)
             tiles_left = tile_count - len(completed)
-            if nights_left * 40 < tiles_left * 12:
+            if nights_left * 40 < tiles_left * _env_float("AURORA_PRESSURE", 12.0):
                 _remember(memory, top)
                 return top
         cursor_ts = _parse_utc((snapshot.get("cursor") or {}).get("timestamp_utc"))
