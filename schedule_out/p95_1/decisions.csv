@@ -1,0 +1,90 @@
+decision_id,slot_id,action,tile_id,program,request_id,reason
+D000001,N20260907-S001,observe,T00047,DARK,,offline patch q=0.79
+D000002,N20260907-S002,observe,T00050,DARK,,highest public current-snapshot estimate
+D000003,N20260907-S003,observe,T00048,BRIGHT,,offline patch q=0.63
+D000004,N20260907-S004,observe,T00056,DARK,,offline patch q=0.76
+D000005,N20260907-S006,observe,T00051,DARK,,offline patch q=0.73
+D000006,N20260907-S008,observe,T00054,DARK,,offline patch q=0.79
+D000007,N20260907-S010,observe,T00052,DARK,,offline patch q=0.73
+D000008,N20260907-S018,observe,T00002,BRIGHT,,highest public current-snapshot estimate
+D000009,N20260907-S018,observe,T00058,DARK,,highest public current-snapshot estimate
+D000010,N20260907-S032,observe,T00020,BRIGHT,,offline patch q=0.40
+D000011,N20260907-S034,observe,T00021,BRIGHT,,offline patch q=0.48
+D000012,N20260907-S035,observe,T00023,BRIGHT,,offline patch q=0.43
+D000013,N20260907-S037,observe,T00013,DARK,RQ0001,highest public current-snapshot estimate
+D000014,N20260907-S037,observe,T00012,DARK,,highest public current-snapshot estimate
+D000015,N20260908-S025,observe,T00062,DARK,RQ0001,highest public current-snapshot estimate
+D000016,N20260908-S026,observe,T00004,DARK,,highest public current-snapshot estimate
+D000017,N20260908-S026,observe,T00059,DARK,,highest public current-snapshot estimate
+D000018,N20260908-S027,observe,T00007,DARK,,highest public current-snapshot estimate
+D000019,N20260908-S028,observe,T00060,DARK,,highest public current-snapshot estimate
+D000020,N20260908-S028,observe,T00063,DARK,,highest public current-snapshot estimate
+D000021,N20260908-S029,observe,T00014,BRIGHT,RQ0001,highest public current-snapshot estimate
+D000022,N20260908-S031,observe,T00008,DARK,,highest public current-snapshot estimate
+D000023,N20260908-S032,observe,T00015,DARK,,highest public current-snapshot estimate
+D000024,N20260909-S001,observe,T00049,DARK,,highest public current-snapshot estimate
+D000025,N20260909-S002,observe,T00042,BRIGHT,,highest public current-snapshot estimate
+D000026,N20260909-S003,observe,T00053,DARK,,highest public current-snapshot estimate
+D000027,N20260909-S004,observe,T00045,DARK,,highest public current-snapshot estimate
+D000028,N20260909-S004,observe,T00046,DARK,,highest public current-snapshot estimate
+D000029,N20260909-S005,observe,T00043,DARK,,highest public current-snapshot estimate
+D000030,N20260909-S008,observe,T00055,DARK,,highest public current-snapshot estimate
+D000031,N20260909-S011,observe,T00061,DARK,,highest public current-snapshot estimate
+D000032,N20260909-S012,observe,T00064,DARK,,highest public current-snapshot estimate
+D000033,N20260909-S013,observe,T00006,DARK,,highest public current-snapshot estimate
+D000034,N20260909-S015,observe,T00005,DARK,,highest public current-snapshot estimate
+D000035,N20260909-S030,observe,T00011,DARK,,highest public current-snapshot estimate
+D000036,N20260909-S035,observe,T00016,DARK,,highest public current-snapshot estimate
+D000037,N20260909-S036,observe,T00024,BRIGHT,,highest public current-snapshot estimate
+D000038,N20260911-S001,observe,T00040,BRIGHT,,highest public current-snapshot estimate
+D000039,N20260914-S001,observe,T00046,DARK,RQ0002,highest public current-snapshot estimate
+D000040,N20260914-S001,observe,T00037,BRIGHT,,highest public current-snapshot estimate
+D000041,N20260914-S029,observe,T00003,DARK,,offline patch q=0.98
+D000042,N20260914-S033,observe,T00010,DARK,,offline patch q=0.95
+D000043,N20260914-S037,observe,T00019,DARK,,offline patch q=0.69
+D000044,N20260914-S039,observe,T00030,BRIGHT,,highest public current-snapshot estimate
+D000045,N20260915-S010,observe,T00057,DARK,,offline patch q=1.00
+D000046,N20260915-S039,observe,T00022,BRIGHT,,highest public current-snapshot estimate
+D000047,N20260922-S019,observe,T00001,DARK,,offline patch q=0.79
+D000048,N20260930-S001,observe,T00050,BRIGHT,RQ0003,highest public current-snapshot estimate
+D000049,N20261007-S007,observe,T00004,BACKUP,RQ0004,highest public current-snapshot estimate
+D000050,N20261110-S009,observe,T00002,BRIGHT,RQ0006,highest public current-snapshot estimate
+D000051,N20261110-S009,observe,T00063,BRIGHT,RQ0005,highest public current-snapshot estimate
+D000052,N20261111-S044,observe,T00018,BRIGHT,,highest public current-snapshot estimate
+D000053,N20261115-S035,observe,T00031,BRIGHT,,highest public current-snapshot estimate
+D000054,N20261115-S038,observe,T00032,BRIGHT,,highest public current-snapshot estimate
+D000055,N20261115-S038,observe,T00027,BRIGHT,,highest public current-snapshot estimate
+D000056,N20261115-S046,observe,T00029,DARK,,offline patch q=0.65
+D000057,N20261118-S045,observe,T00028,BRIGHT,,highest public current-snapshot estimate
+D000058,N20261119-S043,observe,T00026,BRIGHT,,offline patch q=0.61
+D000059,N20261129-S026,observe,T00009,BRIGHT,,highest public current-snapshot estimate
+D000060,N20261129-S026,observe,T00012,BRIGHT,RQ0007,highest public current-snapshot estimate
+D000061,N20261205-S046,observe,T00035,BACKUP,,highest public current-snapshot estimate
+D000062,N20261206-S013,observe,T00009,BRIGHT,RQ0008,highest public current-snapshot estimate
+D000063,N20261206-S046,observe,T00027,DARK,RQ0008,highest public current-snapshot estimate
+D000064,N20261208-S045,observe,T00038,DARK,,offline patch q=0.74
+D000065,N20261210-S007,observe,T00006,DARK,RQ0008,highest public current-snapshot estimate
+D000066,N20261212-S047,observe,T00034,DARK,,offline patch q=0.69
+D000067,N20261216-S029,observe,T00022,BRIGHT,RQ0010,highest public current-snapshot estimate
+D000068,N20261218-S024,observe,T00017,BRIGHT,,offline patch q=0.65
+D000069,N20270101-S001,observe,T00050,BACKUP,RQ0011,highest public current-snapshot estimate
+D000070,N20270101-S002,observe,T00061,BACKUP,RQ0009,highest public current-snapshot estimate
+D000071,N20270111-S036,observe,T00032,BRIGHT,RQ0013,highest public current-snapshot estimate
+D000072,N20270117-S014,observe,T00014,BRIGHT,RQ0013,highest public current-snapshot estimate
+D000073,N20270118-S046,observe,T00036,DARK,RQ0014,highest public current-snapshot estimate
+D000074,N20270118-S047,observe,T00035,DARK,RQ0014,highest public current-snapshot estimate
+D000075,N20270119-S002,observe,T00059,BRIGHT,RQ0013,highest public current-snapshot estimate
+D000076,N20270119-S004,observe,T00016,BRIGHT,RQ0014,highest public current-snapshot estimate
+D000077,N20270122-S002,observe,T00062,BRIGHT,RQ0012,highest public current-snapshot estimate
+D000078,N20270126-S039,observe,T00036,BRIGHT,RQ0015,highest public current-snapshot estimate
+D000079,N20270131-S005,observe,T00025,BRIGHT,,highest public current-snapshot estimate
+D000080,N20270131-S043,observe,T00039,DARK,,highest public current-snapshot estimate
+D000081,N20270131-S044,observe,T00044,DARK,,highest public current-snapshot estimate
+D000082,N20270201-S024,observe,T00030,DARK,RQ0016,highest public current-snapshot estimate
+D000083,N20270201-S024,observe,T00037,BRIGHT,RQ0016,highest public current-snapshot estimate
+D000084,N20270208-S023,observe,T00037,BRIGHT,RQ0017,highest public current-snapshot estimate
+D000085,N20270210-S002,observe,T00025,BACKUP,RQ0017,highest public current-snapshot estimate
+D000086,N20270220-S002,observe,T00008,DARK,RQ0018,highest public current-snapshot estimate
+D000087,N20270224-S041,observe,T00055,BRIGHT,RQ0018,highest public current-snapshot estimate
+D000088,N20270225-S037,observe,T00033,DARK,,offline patch q=1.34
+D000089,N20270225-S043,observe,T00041,DARK,,offline patch q=1.46

@@ -1,0 +1,14 @@
+decision_id,slot_id,action,tile_id,program,request_id,reason
+D000001,N20260909-S004,observe,T00053,DARK,,offline L-window best
+D000002,N20260909-S005,observe,T00050,DARK,,offline L-window best
+D000003,N20260909-S013,observe,T00057,DARK,,offline L-window best
+D000004,N20260909-S014,observe,T00064,DARK,,offline L-window best
+D000005,N20260909-S015,observe,T00059,DARK,,offline L-window best
+D000006,N20260909-S021,observe,T00063,DARK,,offline L-window best
+D000007,N20260909-S022,observe,T00060,DARK,,offline L-window best
+D000008,N20260909-S023,observe,T00058,DARK,,offline L-window best
+D000009,N20260914-S028,observe,T00002,DARK,,offline L-window best
+D000010,N20261204-S021,observe,T00009,DARK,RQ0008,offline L-window best
+D000011,N20261218-S024,observe,T00017,BRIGHT,,offline L-window best
+D000012,N20270203-S019,observe,T00025,DARK,,offline L-window best
+D000013,N20270225-S043,observe,T00041,DARK,,offline L-window best

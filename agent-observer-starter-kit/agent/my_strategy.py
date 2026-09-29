@@ -699,7 +699,59 @@ def _choose_quality(candidates, snapshot, memory, reserve_ctx, reserve_fit_rem, 
             passing.append(c)               # 该天区最后一夜：无条件拍，防 1000/100 终局罚分
             continue
         gate = w_gate_for(tid)
-        # AURORA_GATE=q 时按综合质量门（含几何），默认=w 只看天气因子
+        # ---- v7.2 相对质量门（FLEXIBLE）：q ≥ ρ×该天区历史最大 q（预热 K 夜后启用）----
+        # 每块天区只入账第一次曝光 → 得分由那一次的质量决定。天气是站点级的：
+        # 好夜多块天区同时过门、坏夜集体等待（等待罚金 0.9/时隙，预算内）。
+        # 绝对 w 门的问题：把「高天花板天区」（可到 q≥1.2）和「低天花板天区」
+        # （T00002 上限 0.805）用同一把 w 尺子量——前者拍早了，后者仍被饿。
+        # 相对门按各自上限 ρ 比例设bar；预热期只积累不拍，避免首夜低bar锁死质量。
+        seen = _S.setdefault("q_seen", {})
+        ent = seen.setdefault(tid, [0.0, 0])       # [max_q, seen_nights]
+        if q > ent[0]:
+            ent[0] = q
+        # 记录出现夜数（每夜一次）
+        if len(ent) < 3:
+            ent.append(night_id)
+            ent[1] = 1
+        elif ent[2] != night_id:
+            ent[1] += 1
+            ent[2] = night_id
+        warm_k = _env_float("AURORA_WARM_K", 8.0)
+        rel_bar = _env_float("AURORA_REL_BAR", 0.80)
+        absfloor = _env_float("AURORA_ABS_FLOOR", 0.55)
+        is_required = str(c.get("scheduling_class")) == "REQUIRED"
+        dl0 = deadlines.get(req_id) if req_id else None
+        urgent_now = dl0 is not None and now is not None and (dl0 - now).total_seconds() <= urgent_days * 86400
+        if not is_required and ent[1] >= warm_k and ent[0] > 0:
+            # ---- v7.3 相对质量指派（q_rel 贪心）----
+            # 榜首画像（mean_q 0.98 / 62 夜拍完 / 罚 2228）不是「每块天区等自己的记录夜」，
+            # 而是全局指派：每夜拍「此刻相对质量 q/max_seen 最高的天区」。
+            # q_rel = q / 该天区历史最大 q —— 低天花板天区轻松到 0.9，高天花板天区只在
+            # 顶级夜过线；站点级天气让好夜多块同过、坏夜集体等待（罚金预算内）。
+            if req_id and urgent_now:
+                urgent.append(c)              # 截止期临近：无条件拍（必须在此处，之前的 continue 会让它不可达）
+                continue
+            bar = rel_bar
+            if req_id and dl0 is not None and now is not None:
+                # 请求天区按截止期临近度递减 bar：远期按质量择机，临期放松，urgent 兜底
+                dl_days = (dl0 - now).total_seconds() / 86400.0
+                if 10 < dl_days <= 21:
+                    bar *= 0.93
+                elif urgent_days < dl_days <= 10:
+                    bar *= 0.85
+            # 只在「已过当夜中天」后出手：过峰后 q 单调下降，首个达标时隙就是本夜最好价
+            at_peak = False
+            if now is not None:
+                for r in _S.get("night_windows_meta", {}).get(tid) or []:
+                    if r[2] is not None and now >= r[2]:
+                        at_peak = True
+                        break
+            q_rel = q / ent[0]
+            if q_rel >= bar and q >= absfloor and at_peak:
+                c["_q_rel"] = q_rel
+                passing.append(c)
+            continue
+        # REQUIRED / 请求 / 预热期：沿用 w 门 + 梯度放松（保完成度）
         if _GATE_MODE == "q":
             if q < gate:
                 continue
@@ -712,12 +764,11 @@ def _choose_quality(candidates, snapshot, memory, reserve_ctx, reserve_fit_rem, 
                     continue
             passing.append(c)
             continue
+        if req_id and urgent_now:
+            urgent.append(c)                  # 截止期临近：无条件拍
+            continue
         if req_id:
-            dl = deadlines.get(req_id)
-            if dl is not None and now is not None and (dl - now).total_seconds() <= urgent_days * 86400:
-                urgent.append(c)              # 截止期临近：无条件拍
-                continue
-            gate = max(w_floor, gate - req_slack)
+            continue                          # 未到 urgent 且没过相对门：继续等更好的夜
         if w >= gate:
             passing.append(c)
 
@@ -744,8 +795,12 @@ def _choose_quality(candidates, snapshot, memory, reserve_ctx, reserve_fit_rem, 
                   if float(c["nominal_exptime_seconds"] or 0.0) <= reserve_fit_rem + 0.5]
         if fitted:
             pool = fitted
-    pick = max(pool, key=lambda c: (c.get("estimated_gain_per_second") or 0.0,
-                                    c.get("estimated_total_gain") or 0.0))
+    if (_env_str("AURORA_PICK", "rel") or "rel").lower() == "rel":
+        pick = max(pool, key=lambda c: (c.get("_q_rel", 0.0),
+                                        c.get("estimated_gain_per_second") or 0.0))
+    else:
+        pick = max(pool, key=lambda c: (c.get("estimated_gain_per_second") or 0.0,
+                                        c.get("estimated_total_gain") or 0.0))
     if urgent and pick not in urgent:
         pick = max(urgent, key=lambda c: (c.get("estimated_gain_per_second") or 0.0,
                                           c.get("estimated_total_gain") or 0.0))

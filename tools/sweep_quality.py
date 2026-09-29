@@ -59,7 +59,8 @@ def main() -> int:
     for spec in args.sets:
         env = {}
         # 前缀按长度降序匹配，避免 "ws..." 被 "w" 抢走
-        prefixes = (("pressure", "AURORA_PRESSURE"), ("urg", "AURORA_REQ_URGENT"),
+        prefixes = (("bar", "AURORA_REL_BAR"), ("pick", "AURORA_PICK"), ("warm", "AURORA_WARM_K"), ("rho", "AURORA_RHO"), ("af", "AURORA_ABS_FLOOR"),
+                    ("pressure", "AURORA_PRESSURE"), ("urg", "AURORA_REQ_URGENT"),
                     ("geo", "AURORA_GEO"), ("step", "AURORA_Q_STEP"), ("floor", "AURORA_Q_FLOOR"),
                     ("req", "AURORA_Q_REQ_SLACK"), ("ws", "AURORA_W_STEP"), ("wf", "AURORA_W_FLOOR"),
                     ("hi", "AURORA_Q_HI"), ("w", "AURORA_W"), ("qf", "AURORA_Q_FLOOR"))
