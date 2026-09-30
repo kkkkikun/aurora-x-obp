@@ -50,8 +50,9 @@ UNIF_BOOST = 0.8                # priority boost per unit RA-band completion def
 SKY_MEMORY_HOURS = 2.0         # forget sky-quality samples older than this (in survey time)
 MIN_VISIBLE_SECONDS = 600
 NEIGHBOUR_RADIUS_DEG = 2.1
-ANCHORS = 3
-ANCHOR_POOL = 150             # top-ranked candidates checked for what they can still gain tonight
+ANCHORS = 4                   # widened for long seasons (short cards keep 3, see __init__)
+ANCHOR_POOL = 220             # top-ranked candidates checked for what they can still gain tonight
+ANCHORS_MIN_NIGHTS = 14       # a 4th anchor delays required work on short seasons: measured -112
 CLOSED_KINDS = {"rain", "storm"}
 BLOCKING_KINDS = {"terrain_obstruction", "rocket_launch"}
 DIRECTION_AZ = {"N": 0.0, "NE": 45.0, "E": 90.0, "SE": 135.0, "S": 180.0, "SW": 225.0, "W": 270.0, "NW": 315.0}
@@ -94,6 +95,7 @@ class Planner:
         self.flux = [float(row[col["feature_flux"]]) for row in rows]
         self.weight = [float(row[col["science_weight"]]) for row in rows]
         self.required = [bool(row[col["required"]]) for row in rows]
+        self.anchor_count = ANCHORS if len(self.nights) >= ANCHORS_MIN_NIGHTS else 3
         self.hmax = [max_hour_angle_deg(d, self.lat, self.min_alt + ALT_MARGIN_DEG) for d in self.dec]
         self.factor = [0.0] * len(rows)          # best estimated exposure factor so far
         self.misses = [0] * len(rows)            # assigned but not hit (e.g. too close to a fibre edge)
@@ -463,7 +465,7 @@ class Planner:
         if not anchors:
             return None
         anchors.sort(reverse=True)
-        n_anchors = 1 if self.fast_level >= 1 else ANCHORS
+        n_anchors = 1 if self.fast_level >= 1 else self.anchor_count
         fibers = range(self.grid.n) if self.fast_level < 2 else (5, 6, 9, 10)
         best = None
         tried = 0
