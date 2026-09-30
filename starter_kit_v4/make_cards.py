@@ -55,7 +55,7 @@ def catalog_config(seed: int, start: str, end: str, targets: int, area: float) -
     }
 
 
-def weather_config(seed: int, start: str, end: str, nights: int) -> dict:
+def weather_config(seed: int, start: str, end: str, nights: int, args_stress=(False,)) -> dict:
     scale = max(1.0, nights / 7.0)
     return {
         "schema_version": "v4-weather-v2", "seed": seed, "seed_derivation": "sha256-v1", "site": SITE,
@@ -87,6 +87,11 @@ def weather_config(seed: int, start: str, end: str, nights: int) -> dict:
         "terrain_obstruction": {"sector_count": [1, 2], "width_deg_range": [30.0, 60.0], "max_altitude_deg_range": [35.0, 45.0]},
         "instrument_fault": {"count": 1, "instrument_efficiency_multiplier_range": [0.5, 0.6]},
         "publication": {"forecast_interval_days": 7, "forecast_horizon_days": 7},
+        "stress_tests": {
+            "enabled": bool(args_stress[0]),
+            "data_loss": {"trigger": "after_earthquake", "window_max_fraction": 0.05},
+            "pointing_offset": {"max_abs_alt_rad": 0.002, "max_abs_az_rad": 0.002},
+        } if args_stress[0] else None,
         "output": {"directory": "."},
     }
 
@@ -114,7 +119,7 @@ def main() -> int:
 
     catalog = catalog_config(seed, args.start, end, args.targets, args.area)
     nights = catalog.pop("_nights")
-    weather = weather_config(seed, args.start, end, nights)
+    weather = weather_config(seed, args.start, end, nights, args_stress=(args.stress,))
     fiber = json.loads((V4GEN / "reference" / "v4" / "v4_fiber_config.json").read_text())
     fiber["site"] = SITE
     score = json.loads((V4GEN / "reference" / "v4" / "v4_score_config.json").read_text())
@@ -132,7 +137,8 @@ def main() -> int:
             "slots_csv": "../truth/v4_slots.csv", "weather_truth_csv": "../truth/v4_weather_truth.csv",
             "events_csv": "../truth/v4_events.csv", "earthquake_effects_csv": "../truth/v4_earthquake_effects.csv",
         },
-        "stress": {"enabled": args.stress},
+        "stress": {"enabled": args.stress,
+                   **({"stress_events_csv": "../truth/v4_stress_events.csv"} if args.stress else {})},
     }
     cross_validate_generator_configs(catalog, weather, scenario, fiber, require_hashed_seeds=True)
 
@@ -151,6 +157,8 @@ def main() -> int:
             shutil.copyfile(work / name, out / "public" / name)
         for name in ("v4_slots.csv", "v4_weather_truth.csv", "v4_events.csv", "v4_earthquake_effects.csv"):
             shutil.copyfile(work / name, out / "truth" / name)
+        if args.stress:
+            shutil.copyfile(work / "v4_stress_events.csv", out / "truth" / "v4_stress_events.csv")
         (out / "config" / "v4_scenario.json").write_text(json.dumps(scenario, indent=2))
         (out / "config" / "v4_fiber_config.json").write_text(json.dumps(fiber, indent=2))
         (out / "config" / "v4_score_config.json").write_text(json.dumps(score, indent=2))
