@@ -3,10 +3,16 @@
   "protocol": "jsonl-v4",
   "image": "python:3.12-slim",
   "build": [],
-  "run": ["python3", "-u", "baseline_agent.py"],
+  "run": [
+    "python3",
+    "-u",
+    "baseline_agent.py"
+  ],
   "working_directory": ".",
   "environment": {
     "PYTHONDONTWRITEBYTECODE": "1",
-    "USE_LLM": "1"
+    "USE_LLM": "1",
+    "LLM_NIGHT_PLAN": "0",
+    "LLM_CONFIRM_REPORT": "1"
   }
 }
