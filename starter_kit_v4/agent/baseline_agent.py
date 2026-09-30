@@ -59,6 +59,11 @@ class BaselineAgent:
             if message.get("record_type") == "forecast":
                 self.forecast_notices = message.get("notices", [])
         planner.on_messages(payload.get("new_messages", []), payload.get("latest_bulletin"))
+        for message in payload.get("new_messages", []):
+            if (message.get("record_type") == "bulletin"
+                    and any(n.get("event_kind") == "earthquake" for n in message.get("notices", []))
+                    and not planner.sky_depressed(hours)):
+                planner.pending_quake_hours = hours   # fresh impact on healthy sky: arm the cooldown
         planner.on_result(payload.get("last_result"), now, hours)
         result = payload.get("last_result") or {}
         if result.get("action") == "report":

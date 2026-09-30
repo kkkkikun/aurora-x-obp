@@ -104,6 +104,7 @@ class Planner:
 
         self.scale = 1.0                         # learned sky quality relative to the clear-sky model
         self.era_ratchet = None                  # best sustained clean-sky level seen so far (fault reference)
+        self.pending_quake_hours = -1e9          # a quake notice that hit HEALTHY sky starts the fault-evidence cooldown
         self.prior_scale = 1.0                   # long-run median, used when recent samples are missing
         self.samples: deque = deque(maxlen=24)   # (hours, ratio) of recent unsaturated hits
         self.all_ratios: deque = deque(maxlen=400)
@@ -188,8 +189,11 @@ class Planner:
             elif kind == "state_resync":
                 self._resync(message)
         bulletin = latest_bulletin or {}
+        # earthquake notices do NOT dirty samples: quake dips decay and the fault detector's
+        # ratchet/slope logic interprets them; discarding those nights only punches holes in
+        # the evidence window exactly when a fault needs to be seen.
         self.notices = {(n.get("event_kind", ""), n.get("direction", "")) for n in bulletin.get("notices", [])
-                        if n.get("event_kind") != "terrain_obstruction"}
+                        if n.get("event_kind") not in ("terrain_obstruction", "earthquake")}
 
     def _resync(self, message: dict) -> None:
         """Part of the recent data was lost: restart the factor estimates from the engine's best scores."""
@@ -285,27 +289,54 @@ class Planner:
         history = self.clean_history
         if len(history) < RECENT_SAMPLES + EARLIER_SAMPLES or len(self.all_ratios) < 32:
             return None
-        recent = history[-RECENT_SAMPLES:]
+        # Announced earthquakes depress efficiency and decay over nights. A notice that hit
+        # HEALTHY sky marks a fresh impact: evidence may only use samples after its cooldown.
+        # Notices arriving while the sky is already depressed are afterglow and never re-arm.
+        cutoff = self.pending_quake_hours + 48.0
+        usable = [rec for rec in history if rec[0] >= cutoff]
+        if len(usable) < RECENT_SAMPLES + EARLIER_SAMPLES:
+            return None
+        recent = usable[-RECENT_SAMPLES:]
         span = recent[-1][0] - recent[0][0]
         nights = len({night for _, night, _ in recent})
         if span < 1.5 or nights < 2:
             return None
         recent_median = sorted(r for _, _, r in recent)[len(recent) // 2]
+        # recovering sky (quake residual / weather healing) rises night over night; a fault step
+        # stays flat. A clear upward slope within the recent window vetoes the fault hypothesis.
+        half = max(4, len(recent) // 2)
+        first_half = sorted(r for _, _, r in recent[:-half])[len(recent[:-half]) // 2]
+        second_half = sorted(r for _, _, r in recent[-half:])[len(recent[-half:]) // 2]
+        if second_half > first_half * 1.08:
+            return None
         # ratchet reference: the best sustained 48-sample window median ever seen. Weather drifts a
         # few percent; a fault is a -40..-50% step, so the ratchet separates them cleanly and
-        # survives quake epochs (forget_quality_history must not reset it).
-        window = history[-(RECENT_SAMPLES + EARLIER_SAMPLES):]
+        # survives quake epochs (forget_quality_history must not reset it). Empirically beats a
+        # trailing-week p75, which lets quake tails refill the reference and silence the detector.
+        window = usable[-(RECENT_SAMPLES + EARLIER_SAMPLES):]
         era = sorted(r for _, _, r in window)[len(window) // 2]
         if self.era_ratchet is None or era > self.era_ratchet:
             self.era_ratchet = era
         reference = self.era_ratchet
         dark_line = float(self.bands["DARK"]) * 1.3
+        # reference-independent filter: "predicted clearly DARK under decent sky". Scaling by the
+        # current level empties the check during faults (the band excludes efficiency) and would
+        # loop the DARK diagnostic forever.
         dark = [matched for program, matched, model in self.band_checks
-                if program == "DARK" and model * reference / 0.95 >= dark_line][-16:]
+                if program == "DARK" and model >= dark_line * 0.95][-16:]
         return {"recent_median": round(recent_median, 3), "earlier_median": round(reference, 3),
                 "drop": round(recent_median / max(1e-9, reference), 3), "recent_samples": len(recent),
                 "recent_nights": nights, "earlier_samples": len(window),
                 "dark_checks": len(dark), "dark_matched": sum(dark)}
+
+    def sky_depressed(self, hours: float, margin: float = 0.92) -> bool:
+        """Recent clean-sky level meaningfully below the era ratchet (quake impact active)."""
+        if not self.era_ratchet:
+            return False
+        fresh = [r for when, _, r in self.clean_history[-8:] if when >= hours - 24.0]
+        if len(fresh) < 3:
+            return False
+        return sorted(fresh)[len(fresh) // 2] < self.era_ratchet * margin
 
     def forget_quality_history(self) -> None:
         """After a report, start the quality estimates afresh (the level may change)."""
