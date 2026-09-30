@@ -30,12 +30,14 @@ DIRECTIONS = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
 
 
 class LLMAdvisor:
-    def __init__(self, log=lambda text: None, timeout_seconds: float = 12.0, budget_seconds: float = 90.0, max_calls: int = 40):
+    def __init__(self, log=lambda text: None, timeout_seconds: float = 20.0, budget_seconds: float = 240.0, max_calls: int = 40):
         self.log = log
         self.base_url = os.environ.get("OPENAI_BASE_URL", "").strip().rstrip("/")
         self.api_key = os.environ.get("OPENAI_API_KEY", "").strip()
         self.model = (os.environ.get("OPENAI_MODEL", "").strip() or os.environ.get("MODEL_NAME", "").strip() or "team-model")
         wanted = os.environ.get("USE_LLM", "0").strip().lower() in ("1", "true", "yes", "on")
+        self.night_plan_on = os.environ.get("LLM_NIGHT_PLAN", "1").strip().lower() in ("1", "true", "yes", "on")
+        self.confirm_on = os.environ.get("LLM_CONFIRM_REPORT", "1").strip().lower() in ("1", "true", "yes", "on")
         self.enabled = wanted and bool(self.base_url and self.api_key)
         self.timeout = timeout_seconds
         self.budget = budget_seconds
@@ -83,11 +85,31 @@ class LLMAdvisor:
 
     def night_plan(self, night_date: str, forecast_notices: list, bulletin_notices: list, wallclock_left: float):
         """-> {"avoid_directions": [...], "duration_scale": float} or None."""
-        system = ("You help schedule a telescope survey. Reply with one JSON object only: "
-                  '{"avoid_directions": [compass codes among N,NE,E,SE,S,SW,W,NW], "duration_scale": number 0.7-1.4}. '
-                  "Avoid directions with bad weather tonight; use a larger duration_scale when the sky is poor.")
-        user = json.dumps({"night": night_date, "forecast_notices_for_tonight": forecast_notices,
-                           "current_bulletin_notices": bulletin_notices})
+        system = (
+            "You advise a robotic telescope survey. Tonight's weather notices name event kinds "
+            "(rain, overcast, haze, cold_snap, storm, rocket_launch, earthquake, terrain_obstruction) "
+            "and a compass direction (N/NE/E/SE/S/SW/W/NW or ALL). "
+            "Rules, in priority order: "
+            "(1) avoid_directions lists ONLY the directions that tonight's notices explicitly name "
+            "with a sight-blocking kind (rain, storm, overcast, rocket_launch, terrain_obstruction); "
+            "(2) haze, cold_snap and earthquake do NOT block pointing: never list them; "
+            '(3) direction ALL means the whole sky: return an empty list (nothing to dodge); '
+            "(4) empty or absent notices -> empty list and duration_scale 1.0; "
+            "(5) never list more than the explicitly named directions; listing all eight is always wrong. "
+            "duration_scale: 1.0 normally; 1.2-1.4 only when a quality-dimming kind "
+            "(overcast/haze/cold_snap) is announced for tonight; 0.8-0.9 when the sky is clear and "
+            "you want fast target cycling. Reply with ONE JSON object only: "
+            '{"avoid_directions": [...], "duration_scale": number}. '
+            'Example: notices [{"event_kind":"overcast","direction":"SW"}] -> '
+            '{"avoid_directions": ["SW"], "duration_scale": 1.3}. '
+            'Example: notices [] -> {"avoid_directions": [], "duration_scale": 1.0}.')
+        user = json.dumps({"night": night_date,
+                           "forecast_notices_for_tonight": [
+                               {k: n.get(k) for k in ("event_kind", "direction")}
+                               for n in forecast_notices],
+                           "current_bulletin_notices": [
+                               {k: n.get(k) for k in ("event_kind", "direction")}
+                               for n in bulletin_notices]})
         answer = self._chat(system, user, wallclock_left)
         if not isinstance(answer, dict):
             return None
