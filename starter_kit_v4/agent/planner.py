@@ -44,8 +44,9 @@ DONE_FACTOR = 0.95              # other targets are done at this factor
 PLAN_FACTOR_SAFETY = 0.9        # plan exposures as if the sky were 10% worse than estimated
 EDGE_MARGIN_DEG = 0.08          # prefer targets at least this far inside the fibre glass
 DURATIONS = (300, 450, 600, 900, 1200, 1500, 1800, 2400, 3000, 3600)
-RECENT_SAMPLES = 60             # fault check: recent clean samples, spanning at least two nights
-EARLIER_SAMPLES = 60            # ... compared with at least this many earlier ones
+RECENT_SAMPLES = 24             # fault check: recent clean samples, spanning at least two nights
+EARLIER_SAMPLES = 24            # ... compared with at least this many earlier ones
+UNIF_BOOST = 0.8                # priority boost per unit RA-band completion deficit
 SKY_MEMORY_HOURS = 2.0         # forget sky-quality samples older than this (in survey time)
 MIN_VISIBLE_SECONDS = 600
 NEIGHBOUR_RADIUS_DEG = 2.1
@@ -102,6 +103,7 @@ class Planner:
         self._build_windows()
 
         self.scale = 1.0                         # learned sky quality relative to the clear-sky model
+        self.era_ratchet = None                  # best sustained clean-sky level seen so far (fault reference)
         self.prior_scale = 1.0                   # long-run median, used when recent samples are missing
         self.samples: deque = deque(maxlen=24)   # (hours, ratio) of recent unsaturated hits
         self.all_ratios: deque = deque(maxlen=400)
@@ -118,6 +120,12 @@ class Planner:
         self.extra_avoid: set[str] = set()       # directions an advisor asked to avoid tonight
         self.duration_scale = 1.0
         self.fast_level = 0
+        self.band_width = float(score["uniformity"]["ra_band_width_deg"])
+        self.band_totals: dict[int, int] = {}
+        for r in self.ra:
+            b = int(r // self.band_width)
+            self.band_totals[b] = self.band_totals.get(b, 0) + 1
+        self.band_half = {b: 0 for b in self.band_totals}
 
     # --- precomputation --------------------------------------------------------------------------
 
@@ -191,6 +199,11 @@ class Planner:
             score = best.get(target_id, 0.0)
             self.factor[i] = min(1.0, score / (self.weight[i] * top)) if score > 0 else 0.0
         self.active = [i for i in range(len(self.ids)) if self.hmax[i] > 0.0]
+        self.band_half = {}
+        for i, f in enumerate(self.factor):
+            if f >= 0.5:
+                b = int(self.ra[i] // self.band_width)
+                self.band_half[b] = self.band_half.get(b, 0) + 1
         self.pending = {}
         self.log(f"state_resync: {len(best)} targets keep a score; plan rebuilt")
 
@@ -232,7 +245,11 @@ class Planner:
             ratio_match = factor_if_match * self.f0t0 / (self.flux[i] * self.pending_duration * prediction["model"])
             matched = self._band(ratio_match * prediction["band_model"]) == self.pending_program
             factor = factor_if_match if matched else factor_if_miss
+            before = self.factor[i]
             self.factor[i] = max(self.factor[i], min(1.0, factor))
+            if before < 0.5 <= self.factor[i]:
+                b = int(self.ra[i] // self.band_width)
+                self.band_half[b] = self.band_half.get(b, 0) + 1
             if self.required[i] and self.factor[i] < 0.5:
                 self.attempts[i] += 1  # not enough yet: lower its priority a little for next time
             if factor < 0.97:
@@ -243,7 +260,6 @@ class Planner:
                     self.clean_history.append((hours, self.pending_night, ratio))
         self.pending = {}
         self.update_scale(hours)
-
     def update_scale(self, hours: float) -> None:
         """Sky quality now = median of recent samples; fall back to the long-run median when stale."""
         if len(self.all_ratios) >= 8:
@@ -262,27 +278,33 @@ class Planner:
     # --- anomaly check ---------------------------------------------------------------------------
 
     def fault_evidence(self, hours: float) -> dict | None:
-        """Compare recent clean-sky quality with earlier quality. A large drop that lasts across two
-        nights and that no bulletin explains hints at an instrument problem. Short unannounced dome
-        closures also lower quality, but they rarely last that long. Returns the evidence, or None."""
+        """A fault is a step down in instrument efficiency; weather dips and earthquakes decay or
+        recover. So compare the recent clean-sky median against the LONG-RUN median (all_ratios):
+        a sustained step shows up as a stable drop, while decaying noise pulls the reference down
+        with it. Requires the recent window to span at least two nights and 1.5 hours."""
         history = self.clean_history
-        if len(history) < RECENT_SAMPLES + EARLIER_SAMPLES:
+        if len(history) < RECENT_SAMPLES + EARLIER_SAMPLES or len(self.all_ratios) < 32:
             return None
         recent = history[-RECENT_SAMPLES:]
-        earlier = history[:-RECENT_SAMPLES]
         span = recent[-1][0] - recent[0][0]
         nights = len({night for _, night, _ in recent})
-        if span < 4.0 or nights < 2:
+        if span < 1.5 or nights < 2:
             return None
         recent_median = sorted(r for _, _, r in recent)[len(recent) // 2]
-        earlier_median = sorted(r for _, _, r in earlier)[len(earlier) // 2]
-        # DARK declarations on targets that were clearly DARK under the earlier sky: do they still match?
+        # ratchet reference: the best sustained 48-sample window median ever seen. Weather drifts a
+        # few percent; a fault is a -40..-50% step, so the ratchet separates them cleanly and
+        # survives quake epochs (forget_quality_history must not reset it).
+        window = history[-(RECENT_SAMPLES + EARLIER_SAMPLES):]
+        era = sorted(r for _, _, r in window)[len(window) // 2]
+        if self.era_ratchet is None or era > self.era_ratchet:
+            self.era_ratchet = era
+        reference = self.era_ratchet
         dark_line = float(self.bands["DARK"]) * 1.3
         dark = [matched for program, matched, model in self.band_checks
-                if program == "DARK" and model * earlier_median / 0.95 >= dark_line][-16:]
-        return {"recent_median": round(recent_median, 3), "earlier_median": round(earlier_median, 3),
-                "drop": round(recent_median / max(1e-9, earlier_median), 3), "recent_samples": len(recent),
-                "recent_nights": nights, "earlier_samples": len(earlier),
+                if program == "DARK" and model * reference / 0.95 >= dark_line][-16:]
+        return {"recent_median": round(recent_median, 3), "earlier_median": round(reference, 3),
+                "drop": round(recent_median / max(1e-9, reference), 3), "recent_samples": len(recent),
+                "recent_nights": nights, "earlier_samples": len(window),
                 "dark_checks": len(dark), "dark_matched": sum(dark)}
 
     def forget_quality_history(self) -> None:
@@ -333,9 +355,9 @@ class Planner:
         damp = 0.6 ** self.misses[i]
         if self.required[i]:
             if f >= REQUIRED_SAFE_FACTOR:
-                return self.weight[i] * max(0.0, 1.0 - f * f) * damp
-            return (self.weight[i] * (1.0 - f * f) + REQUIRED_BONUS * (1.0 if f < 0.5 else 0.35)) * damp
-        return 0.0 if f >= DONE_FACTOR else self.weight[i] * (1.0 - f * f) * damp
+                return self.weight[i] * max(0.0, 1.0 - f) * damp
+            return (self.weight[i] * (1.0 - f) + REQUIRED_BONUS * (1.0 if f < 0.5 else 0.35)) * damp
+        return 0.0 if f >= DONE_FACTOR else self.weight[i] * (1.0 - f) * damp
 
     def plan(self, now: datetime, night_end: datetime, night_index: int, hours: float):
         """Return an observe action dict, or None when nothing useful is up."""
@@ -348,6 +370,11 @@ class Planner:
             return None
         min_visible = min(MIN_VISIBLE_SECONDS, seconds_left) * SIDEREAL_DEG_PER_SECOND
         # 1. visible, not-done targets (hour-angle test: cheap, no trigonometry)
+        boosts = {}
+        if self.band_totals:
+            ratios = {b: self.band_half.get(b, 0) / n for b, n in self.band_totals.items()}
+            mean_r = sum(ratios.values()) / len(ratios)
+            boosts = {b: 1.0 + UNIF_BOOST * max(0.0, mean_r - r) for b, r in ratios.items()}
         still_active = []
         candidates = []
         for i in self.active:
@@ -360,7 +387,8 @@ class Planner:
             if -h <= ha and ha + min_visible <= h:
                 nights_left = max(1, self.last_night[i] - night_index + 1)
                 setting = 1.0 + 0.5 * max(0.0, ha / h) if h < 180 else 1.0
-                candidates.append((v * (1.0 + 2.0 / nights_left) * setting, i))
+                candidates.append((v * boosts.get(int(self.ra[i] // self.band_width), 1.0)
+                                   * (1.0 + 2.0 / nights_left) * setting, i))
         self.active = still_active
         if not candidates:
             return None
@@ -387,7 +415,7 @@ class Planner:
                 up = (self.hmax[i] - wrap180(lst - self.ra[i])) / SIDEREAL_DEG_PER_SECOND if self.hmax[i] < 180 else 1e9
                 reach = min(1.0, k * min(self.max_exposure, up, seconds_left))
                 f = self.factor[i]
-                gain = self.weight[i] * max(0.0, reach * reach - f * f)
+                gain = self.weight[i] * max(0.0, min(1.0, reach) - f)
                 if self.required[i] and f < 0.5 and reach >= 0.5:
                     gain += REQUIRED_BONUS
                 damp = 0.6 ** self.misses[i] * 0.7 ** self.attempts[i]
@@ -476,7 +504,7 @@ class Planner:
                 i = item["i"]
                 reached = min(1.0, item["k"] * duration)
                 f = self.factor[i]
-                gain += self.weight[i] * max(0.0, reached * reached - f * f)
+                gain += self.weight[i] * max(0.0, min(1.0, reached) - f)
                 if self.required[i] and f < 0.5 and reached >= 0.5:
                     gain += REQUIRED_BONUS
             rate = gain / duration

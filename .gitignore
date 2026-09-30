@@ -36,3 +36,7 @@
 starter_kit_v4/run_output/
 starter_kit_v4/run_*/
 starter_kit_v4/cards/*/truth/
+starter_kit_v4/bench_aurora/
+starter_kit_v4/bench_base/
+starter_kit_v4/run_s*_*/
+starter_kit_v4/baseline_ref/

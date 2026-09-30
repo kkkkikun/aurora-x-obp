@@ -26,7 +26,7 @@ from skymath import format_utc, parse_utc
 
 PROTOCOL = "participant-agent-protocol-v4"
 REPORT_DROP = 0.62          # report when recent clean-sky quality falls below 62% of the earlier level
-REPORT_CONFIRMATIONS = 3    # ... on this many checks in a row, on different nights (the drop must persist)
+REPORT_CONFIRMATIONS = 2    # ... on this many checks in a row, on different nights (the drop must persist)
 REPORT_SPACING_HOURS = 6.0
 MAX_REPORTS = 2
 
@@ -44,6 +44,7 @@ class BaselineAgent:
         self.forecast_notices: list = []
         self.night_seen = None
         self.reports = 0
+        self.false_streak = 0
         self.last_report_hours = -1e9
         self.suspicion = []
         self.observes = 0
@@ -59,6 +60,15 @@ class BaselineAgent:
                 self.forecast_notices = message.get("notices", [])
         planner.on_messages(payload.get("new_messages", []), payload.get("latest_bulletin"))
         planner.on_result(payload.get("last_result"), now, hours)
+        result = payload.get("last_result") or {}
+        if result.get("action") == "report":
+            if result.get("correct"):
+                self.false_streak = 0
+            else:
+                self.false_streak += 1
+                self.reports = max(0, self.reports - 1)   # a false report is free: refund the budget
+                # false alarms during decaying events: back off so the next check sees healed sky
+                self.last_report_hours = hours + 12.0 * self.false_streak
         self._pace(payload, now)
 
         night = planner.current_night(now)
@@ -125,12 +135,16 @@ class BaselineAgent:
         saturated hits declared DARK do not show that the sky band dropped too (that would be weather)."""
         planner = self.planner
         planner.force_program = None
+        if hours < 8.0:
+            return None                                   # cold-start noise: never report early
         if self.reports >= MAX_REPORTS or hours - self.last_report_hours < 24.0:
             return None
         evidence = planner.fault_evidence(hours)
-        threshold = REPORT_DROP if self.reports == 0 else REPORT_DROP - 0.07
-        if evidence is None or evidence["drop"] >= threshold:
-            self.suspicion = []
+        threshold = REPORT_DROP - (0.06 if self.false_streak else 0.0)
+        if evidence is None:
+            return None                                  # window not ready: keep prior confirmations
+        if evidence["drop"] >= threshold:
+            self.suspicion = []                          # contradictory evidence: start over
             return None
         if evidence["dark_checks"] < 6:
             planner.force_program = "DARK"   # diagnostic: ask the sky which band it is in

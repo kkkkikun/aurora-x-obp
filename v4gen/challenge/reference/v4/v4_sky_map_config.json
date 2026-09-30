@@ -1,0 +1,8 @@
+{
+  "targets_csv": "products/targets.csv",
+  "footprint_csv": "products/footprint.csv",
+  "summary_json": "products/summary.json",
+  "pdf_output": "products/sky_map.pdf",
+  "png_output": "products/sky_map.png",
+  "png_dpi": 200
+}
