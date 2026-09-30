@@ -123,7 +123,7 @@ class BaselineAgent:
     def _night_advice(self, night_start, payload: dict) -> None:
         self.planner.extra_avoid = set()
         self.planner.duration_scale = 1.0
-        if not self.advisor.enabled:
+        if not self.advisor.enabled or not self.advisor.night_plan_on:
             return
         night_date = (night_start - timedelta(hours=12)).date().isoformat()
         tonight = [n for n in self.forecast_notices if night_date in n.get("nights", [])]
@@ -162,7 +162,8 @@ class BaselineAgent:
         if len(self.suspicion) < REPORT_CONFIRMATIONS:
             return None
         self.suspicion = []
-        verdict = self.advisor.confirm_report(evidence, float((payload.get("wallclock") or {}).get("remaining_seconds", 0)))
+        verdict = (self.advisor.confirm_report(evidence, float((payload.get("wallclock") or {}).get("remaining_seconds", 0)))
+                   if self.advisor.enabled and self.advisor.confirm_on else None)
         if verdict is False:
             log(f"baseline: report vetoed by the model at {payload['now_utc']} ({evidence})")
             self.last_report_hours = hours
