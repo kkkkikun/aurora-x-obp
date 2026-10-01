@@ -1,0 +1,36 @@
+{
+  "schema_version": "v4-scenario-v1",
+  "name": "s606",
+  "task_card": {
+    "card_id": "s606",
+    "scenario_slug": "v4-s606",
+    "phase": "local"
+  },
+  "site": {
+    "name": "Paranal, Chile (virtual)",
+    "latitude_deg": -24.6157,
+    "longitude_deg": -70.3976,
+    "utc_offset_hours": -4.0,
+    "sun_altitude_limit_deg": -18.0
+  },
+  "minimum_altitude_deg": 30.0,
+  "limits": {
+    "global_wallclock_seconds": 900
+  },
+  "fiber_config": "v4_fiber_config.json",
+  "score_config": "v4_score_config.json",
+  "products": {
+    "targets_csv": "../public/targets.csv",
+    "footprint_csv": "../public/footprint.csv",
+    "night_calendar_csv": "../public/v4_night_calendar.csv",
+    "bulletins_jsonl": "../public/v4_bulletins.jsonl",
+    "forecasts_jsonl": "../public/v4_forecasts.jsonl",
+    "slots_csv": "../truth/v4_slots.csv",
+    "weather_truth_csv": "../truth/v4_weather_truth.csv",
+    "events_csv": "../truth/v4_events.csv",
+    "earthquake_effects_csv": "../truth/v4_earthquake_effects.csv"
+  },
+  "stress": {
+    "enabled": false
+  }
+}

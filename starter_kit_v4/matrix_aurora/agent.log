@@ -1,0 +1,4 @@
+[local-runner] entry=baseline_agent.py card=s_short dotenv_keys=[]
+llm: USE_LLM is on but OPENAI_BASE_URL / OPENAI_API_KEY are missing; using rules only
+baseline: 2400 targets, 120 required, 8 nights; init 0.01s; llm=off
+baseline finished: termination_reason=survey_complete observes=248 reports=0

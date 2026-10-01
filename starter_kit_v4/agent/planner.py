@@ -130,6 +130,7 @@ class Planner:
         self.extra_avoid: set[str] = set()       # directions an advisor asked to avoid tonight
         self._calib_samples: list[tuple[float, float, int, bool]] = []   # (dn, de, fiber, hit)
         self._calib_since = 0
+        self._calib_fails = 0
         self.pointing_corr: tuple[float, float] | None = None   # estimated (d_north, d_east) of actual-vs-commanded
         # env 旋钮是实验入口（P1-1 时长-覆盖扫描）；LLM/规则每夜重置到这个 base
         try:
@@ -370,7 +371,8 @@ class Planner:
         position minus the offset; hits must land inside the assigned glass (score +1),
         misses must fall outside it (score +1 when consistent). Grid search, then activate
         only on strong, sizeable evidence (a real Hard-mode offset lifts consistency a lot)."""
-        if self.pointing_corr is not None or len(self._calib_samples) < CALIB_MIN_SAMPLES:
+        if self.pointing_corr is not None or self._calib_fails >= 3 \
+                or len(self._calib_samples) < CALIB_MIN_SAMPLES:
             return
         samples = self._calib_samples[-400:]
         best_off, best_score = (0.0, 0.0), None
@@ -399,6 +401,8 @@ class Planner:
             self.pointing_corr = best_off
             self.log(f"pointing offset estimated ({best_off[0]:+.3f}, {best_off[1]:+.3f}) deg, "
                      f"consistency gain {gain:.2f} over {len(samples)} samples")
+        else:
+            self._calib_fails += 1
 
     def forget_quality_history(self) -> None:
         """After a report, start the quality estimates afresh (the level may change)."""
@@ -460,6 +464,7 @@ class Planner:
                 and len(self._calib_samples) >= CALIB_MIN_SAMPLES and self._calib_since == 0):
             self._calibrate_pointing()
             self._calib_since = 0
+        self._calib_fails = 0
         lst = local_sidereal_deg(now, self.lon)
         horizon = min(night_end, self.survey_end)
         seconds_left = (horizon - now).total_seconds()

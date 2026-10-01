@@ -1,0 +1,45 @@
+{
+  "by_class": {
+    "BGS": 140.020229,
+    "ELG": 586.757885,
+    "LRG": 267.990622,
+    "QSO": 280.578657,
+    "Star": 28.961113
+  },
+  "components": {
+    "report_settlement": 0.0,
+    "required_penalty": -0.0,
+    "sum_best_scores": 1304.308506,
+    "uniformity_penalty": -6.761861
+  },
+  "counts": {
+    "decisions": 276,
+    "invalidated_observations": 0,
+    "observations": 2006,
+    "observe_actions": 161,
+    "required_missing": 0,
+    "targets_observed": 1563
+  },
+  "invalidations": [],
+  "scenario": "s_short",
+  "schema_version": "v4-score-report-v1",
+  "sha256": {
+    "decisions": "4c3b161b51b2523270af8de19923cbf5800ed9863620bc85fa061c6bc87fa87e",
+    "messages": "983e32823e100798ace23f780abf351fef95debae9995771daa09e93b82bce21",
+    "observations": "8e2ab07e59d574c34fd4651fe4804d3a789350d9cad44e6c21dd56ff26148bba",
+    "scenario": "d01c52f4c23a6e5b4f1eefd8cf8cf7df5d0e6ebc88350665e44bf43ff0d48696"
+  },
+  "termination": {
+    "detail": "",
+    "reason": "survey_complete"
+  },
+  "total": 1297.546645,
+  "uniformity_bands": {
+    "ra_10_20": 0.421053,
+    "ra_20_30": 0.471284,
+    "ra_30_40": 0.427653,
+    "ra_340_350": 0.641189,
+    "ra_350_360": 0.627273,
+    "ra_40_50": 0.648438
+  }
+}

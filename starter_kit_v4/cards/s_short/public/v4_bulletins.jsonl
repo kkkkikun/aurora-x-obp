@@ -1,0 +1,281 @@
+{"record_type": "bulletin", "slot_id": "N20261001-S001", "night_id": "N20261001", "issued_at_utc": "2026-10-02T00:00:00Z", "initial": true, "notices": [{"event_kind": "terrain_obstruction", "direction": "SE"}]}
+{"record_type": "bulletin", "slot_id": "N20261001-S002", "night_id": "N20261001", "issued_at_utc": "2026-10-02T00:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S003", "night_id": "N20261001", "issued_at_utc": "2026-10-02T00:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S004", "night_id": "N20261001", "issued_at_utc": "2026-10-02T00:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S005", "night_id": "N20261001", "issued_at_utc": "2026-10-02T01:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S006", "night_id": "N20261001", "issued_at_utc": "2026-10-02T01:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S007", "night_id": "N20261001", "issued_at_utc": "2026-10-02T01:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S008", "night_id": "N20261001", "issued_at_utc": "2026-10-02T01:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S009", "night_id": "N20261001", "issued_at_utc": "2026-10-02T02:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S010", "night_id": "N20261001", "issued_at_utc": "2026-10-02T02:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S011", "night_id": "N20261001", "issued_at_utc": "2026-10-02T02:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S012", "night_id": "N20261001", "issued_at_utc": "2026-10-02T02:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S013", "night_id": "N20261001", "issued_at_utc": "2026-10-02T03:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S014", "night_id": "N20261001", "issued_at_utc": "2026-10-02T03:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S015", "night_id": "N20261001", "issued_at_utc": "2026-10-02T03:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S016", "night_id": "N20261001", "issued_at_utc": "2026-10-02T03:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S017", "night_id": "N20261001", "issued_at_utc": "2026-10-02T04:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S018", "night_id": "N20261001", "issued_at_utc": "2026-10-02T04:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S019", "night_id": "N20261001", "issued_at_utc": "2026-10-02T04:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S020", "night_id": "N20261001", "issued_at_utc": "2026-10-02T04:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S021", "night_id": "N20261001", "issued_at_utc": "2026-10-02T05:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S022", "night_id": "N20261001", "issued_at_utc": "2026-10-02T05:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S023", "night_id": "N20261001", "issued_at_utc": "2026-10-02T05:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S024", "night_id": "N20261001", "issued_at_utc": "2026-10-02T05:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S025", "night_id": "N20261001", "issued_at_utc": "2026-10-02T06:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S026", "night_id": "N20261001", "issued_at_utc": "2026-10-02T06:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S027", "night_id": "N20261001", "issued_at_utc": "2026-10-02T06:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S028", "night_id": "N20261001", "issued_at_utc": "2026-10-02T06:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S029", "night_id": "N20261001", "issued_at_utc": "2026-10-02T07:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S030", "night_id": "N20261001", "issued_at_utc": "2026-10-02T07:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S031", "night_id": "N20261001", "issued_at_utc": "2026-10-02T07:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S032", "night_id": "N20261001", "issued_at_utc": "2026-10-02T07:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S033", "night_id": "N20261001", "issued_at_utc": "2026-10-02T08:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S034", "night_id": "N20261001", "issued_at_utc": "2026-10-02T08:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S035", "night_id": "N20261001", "issued_at_utc": "2026-10-02T08:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261001-S036", "night_id": "N20261001", "issued_at_utc": "2026-10-02T08:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S001", "night_id": "N20261002", "issued_at_utc": "2026-10-03T00:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S002", "night_id": "N20261002", "issued_at_utc": "2026-10-03T00:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S003", "night_id": "N20261002", "issued_at_utc": "2026-10-03T00:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S004", "night_id": "N20261002", "issued_at_utc": "2026-10-03T00:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S005", "night_id": "N20261002", "issued_at_utc": "2026-10-03T01:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S006", "night_id": "N20261002", "issued_at_utc": "2026-10-03T01:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S007", "night_id": "N20261002", "issued_at_utc": "2026-10-03T01:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S008", "night_id": "N20261002", "issued_at_utc": "2026-10-03T01:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S009", "night_id": "N20261002", "issued_at_utc": "2026-10-03T02:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S010", "night_id": "N20261002", "issued_at_utc": "2026-10-03T02:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S011", "night_id": "N20261002", "issued_at_utc": "2026-10-03T02:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S012", "night_id": "N20261002", "issued_at_utc": "2026-10-03T02:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S013", "night_id": "N20261002", "issued_at_utc": "2026-10-03T03:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S014", "night_id": "N20261002", "issued_at_utc": "2026-10-03T03:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S015", "night_id": "N20261002", "issued_at_utc": "2026-10-03T03:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S016", "night_id": "N20261002", "issued_at_utc": "2026-10-03T03:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S017", "night_id": "N20261002", "issued_at_utc": "2026-10-03T04:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S018", "night_id": "N20261002", "issued_at_utc": "2026-10-03T04:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S019", "night_id": "N20261002", "issued_at_utc": "2026-10-03T04:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S020", "night_id": "N20261002", "issued_at_utc": "2026-10-03T04:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S021", "night_id": "N20261002", "issued_at_utc": "2026-10-03T05:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S022", "night_id": "N20261002", "issued_at_utc": "2026-10-03T05:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S023", "night_id": "N20261002", "issued_at_utc": "2026-10-03T05:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S024", "night_id": "N20261002", "issued_at_utc": "2026-10-03T05:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S025", "night_id": "N20261002", "issued_at_utc": "2026-10-03T06:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S026", "night_id": "N20261002", "issued_at_utc": "2026-10-03T06:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S027", "night_id": "N20261002", "issued_at_utc": "2026-10-03T06:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S028", "night_id": "N20261002", "issued_at_utc": "2026-10-03T06:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S029", "night_id": "N20261002", "issued_at_utc": "2026-10-03T07:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S030", "night_id": "N20261002", "issued_at_utc": "2026-10-03T07:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S031", "night_id": "N20261002", "issued_at_utc": "2026-10-03T07:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S032", "night_id": "N20261002", "issued_at_utc": "2026-10-03T07:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S033", "night_id": "N20261002", "issued_at_utc": "2026-10-03T08:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S034", "night_id": "N20261002", "issued_at_utc": "2026-10-03T08:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S035", "night_id": "N20261002", "issued_at_utc": "2026-10-03T08:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261002-S036", "night_id": "N20261002", "issued_at_utc": "2026-10-03T08:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S001", "night_id": "N20261003", "issued_at_utc": "2026-10-04T00:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S002", "night_id": "N20261003", "issued_at_utc": "2026-10-04T00:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S003", "night_id": "N20261003", "issued_at_utc": "2026-10-04T00:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S004", "night_id": "N20261003", "issued_at_utc": "2026-10-04T00:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S005", "night_id": "N20261003", "issued_at_utc": "2026-10-04T01:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S006", "night_id": "N20261003", "issued_at_utc": "2026-10-04T01:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S007", "night_id": "N20261003", "issued_at_utc": "2026-10-04T01:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S008", "night_id": "N20261003", "issued_at_utc": "2026-10-04T01:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S009", "night_id": "N20261003", "issued_at_utc": "2026-10-04T02:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S010", "night_id": "N20261003", "issued_at_utc": "2026-10-04T02:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S011", "night_id": "N20261003", "issued_at_utc": "2026-10-04T02:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S012", "night_id": "N20261003", "issued_at_utc": "2026-10-04T02:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S013", "night_id": "N20261003", "issued_at_utc": "2026-10-04T03:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S014", "night_id": "N20261003", "issued_at_utc": "2026-10-04T03:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S015", "night_id": "N20261003", "issued_at_utc": "2026-10-04T03:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S016", "night_id": "N20261003", "issued_at_utc": "2026-10-04T03:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S017", "night_id": "N20261003", "issued_at_utc": "2026-10-04T04:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S018", "night_id": "N20261003", "issued_at_utc": "2026-10-04T04:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S019", "night_id": "N20261003", "issued_at_utc": "2026-10-04T04:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S020", "night_id": "N20261003", "issued_at_utc": "2026-10-04T04:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S021", "night_id": "N20261003", "issued_at_utc": "2026-10-04T05:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S022", "night_id": "N20261003", "issued_at_utc": "2026-10-04T05:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S023", "night_id": "N20261003", "issued_at_utc": "2026-10-04T05:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S024", "night_id": "N20261003", "issued_at_utc": "2026-10-04T05:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S025", "night_id": "N20261003", "issued_at_utc": "2026-10-04T06:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S026", "night_id": "N20261003", "issued_at_utc": "2026-10-04T06:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S027", "night_id": "N20261003", "issued_at_utc": "2026-10-04T06:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S028", "night_id": "N20261003", "issued_at_utc": "2026-10-04T06:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261003-S029", "night_id": "N20261003", "issued_at_utc": "2026-10-04T07:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261003-S030", "night_id": "N20261003", "issued_at_utc": "2026-10-04T07:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261003-S031", "night_id": "N20261003", "issued_at_utc": "2026-10-04T07:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261003-S032", "night_id": "N20261003", "issued_at_utc": "2026-10-04T07:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261003-S033", "night_id": "N20261003", "issued_at_utc": "2026-10-04T08:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261003-S034", "night_id": "N20261003", "issued_at_utc": "2026-10-04T08:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261003-S035", "night_id": "N20261003", "issued_at_utc": "2026-10-04T08:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261003-S036", "night_id": "N20261003", "issued_at_utc": "2026-10-04T08:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S001", "night_id": "N20261004", "issued_at_utc": "2026-10-05T00:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S002", "night_id": "N20261004", "issued_at_utc": "2026-10-05T00:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S003", "night_id": "N20261004", "issued_at_utc": "2026-10-05T00:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S004", "night_id": "N20261004", "issued_at_utc": "2026-10-05T00:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S005", "night_id": "N20261004", "issued_at_utc": "2026-10-05T01:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S006", "night_id": "N20261004", "issued_at_utc": "2026-10-05T01:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S007", "night_id": "N20261004", "issued_at_utc": "2026-10-05T01:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S008", "night_id": "N20261004", "issued_at_utc": "2026-10-05T01:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S009", "night_id": "N20261004", "issued_at_utc": "2026-10-05T02:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S010", "night_id": "N20261004", "issued_at_utc": "2026-10-05T02:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S011", "night_id": "N20261004", "issued_at_utc": "2026-10-05T02:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S012", "night_id": "N20261004", "issued_at_utc": "2026-10-05T02:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S013", "night_id": "N20261004", "issued_at_utc": "2026-10-05T03:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261004-S014", "night_id": "N20261004", "issued_at_utc": "2026-10-05T03:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261004-S015", "night_id": "N20261004", "issued_at_utc": "2026-10-05T03:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261004-S016", "night_id": "N20261004", "issued_at_utc": "2026-10-05T03:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261004-S017", "night_id": "N20261004", "issued_at_utc": "2026-10-05T04:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261004-S018", "night_id": "N20261004", "issued_at_utc": "2026-10-05T04:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261004-S019", "night_id": "N20261004", "issued_at_utc": "2026-10-05T04:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S020", "night_id": "N20261004", "issued_at_utc": "2026-10-05T04:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S021", "night_id": "N20261004", "issued_at_utc": "2026-10-05T05:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S022", "night_id": "N20261004", "issued_at_utc": "2026-10-05T05:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S023", "night_id": "N20261004", "issued_at_utc": "2026-10-05T05:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S024", "night_id": "N20261004", "issued_at_utc": "2026-10-05T05:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S025", "night_id": "N20261004", "issued_at_utc": "2026-10-05T06:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S026", "night_id": "N20261004", "issued_at_utc": "2026-10-05T06:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S027", "night_id": "N20261004", "issued_at_utc": "2026-10-05T06:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S028", "night_id": "N20261004", "issued_at_utc": "2026-10-05T06:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S029", "night_id": "N20261004", "issued_at_utc": "2026-10-05T07:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}, {"event_kind": "rain", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S030", "night_id": "N20261004", "issued_at_utc": "2026-10-05T07:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}, {"event_kind": "rain", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S031", "night_id": "N20261004", "issued_at_utc": "2026-10-05T07:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}, {"event_kind": "rain", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S032", "night_id": "N20261004", "issued_at_utc": "2026-10-05T07:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}, {"event_kind": "rain", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S033", "night_id": "N20261004", "issued_at_utc": "2026-10-05T08:00:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}, {"event_kind": "rain", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S034", "night_id": "N20261004", "issued_at_utc": "2026-10-05T08:15:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}, {"event_kind": "rain", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S035", "night_id": "N20261004", "issued_at_utc": "2026-10-05T08:30:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261004-S036", "night_id": "N20261004", "issued_at_utc": "2026-10-05T08:45:00Z", "initial": false, "notices": [{"event_kind": "overcast", "direction": "N"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S001", "night_id": "N20261005", "issued_at_utc": "2026-10-06T00:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S002", "night_id": "N20261005", "issued_at_utc": "2026-10-06T00:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S003", "night_id": "N20261005", "issued_at_utc": "2026-10-06T00:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S004", "night_id": "N20261005", "issued_at_utc": "2026-10-06T00:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S005", "night_id": "N20261005", "issued_at_utc": "2026-10-06T01:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S006", "night_id": "N20261005", "issued_at_utc": "2026-10-06T01:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S007", "night_id": "N20261005", "issued_at_utc": "2026-10-06T01:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S008", "night_id": "N20261005", "issued_at_utc": "2026-10-06T01:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S009", "night_id": "N20261005", "issued_at_utc": "2026-10-06T02:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S010", "night_id": "N20261005", "issued_at_utc": "2026-10-06T02:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S011", "night_id": "N20261005", "issued_at_utc": "2026-10-06T02:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S012", "night_id": "N20261005", "issued_at_utc": "2026-10-06T02:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S013", "night_id": "N20261005", "issued_at_utc": "2026-10-06T03:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S014", "night_id": "N20261005", "issued_at_utc": "2026-10-06T03:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S015", "night_id": "N20261005", "issued_at_utc": "2026-10-06T03:30:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S016", "night_id": "N20261005", "issued_at_utc": "2026-10-06T03:45:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S017", "night_id": "N20261005", "issued_at_utc": "2026-10-06T04:00:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S018", "night_id": "N20261005", "issued_at_utc": "2026-10-06T04:15:00Z", "initial": false, "notices": []}
+{"record_type": "bulletin", "slot_id": "N20261005-S019", "night_id": "N20261005", "issued_at_utc": "2026-10-06T04:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S020", "night_id": "N20261005", "issued_at_utc": "2026-10-06T04:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S021", "night_id": "N20261005", "issued_at_utc": "2026-10-06T05:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S022", "night_id": "N20261005", "issued_at_utc": "2026-10-06T05:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S023", "night_id": "N20261005", "issued_at_utc": "2026-10-06T05:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S024", "night_id": "N20261005", "issued_at_utc": "2026-10-06T05:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S025", "night_id": "N20261005", "issued_at_utc": "2026-10-06T06:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S026", "night_id": "N20261005", "issued_at_utc": "2026-10-06T06:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S027", "night_id": "N20261005", "issued_at_utc": "2026-10-06T06:30:00Z", "initial": false, "notices": [{"event_kind": "rocket_launch", "direction": "E"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S028", "night_id": "N20261005", "issued_at_utc": "2026-10-06T06:45:00Z", "initial": false, "notices": [{"event_kind": "rocket_launch", "direction": "E"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S029", "night_id": "N20261005", "issued_at_utc": "2026-10-06T07:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S030", "night_id": "N20261005", "issued_at_utc": "2026-10-06T07:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S031", "night_id": "N20261005", "issued_at_utc": "2026-10-06T07:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S032", "night_id": "N20261005", "issued_at_utc": "2026-10-06T07:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S033", "night_id": "N20261005", "issued_at_utc": "2026-10-06T08:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S034", "night_id": "N20261005", "issued_at_utc": "2026-10-06T08:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261005-S035", "night_id": "N20261005", "issued_at_utc": "2026-10-06T08:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S001", "night_id": "N20261006", "issued_at_utc": "2026-10-07T00:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S002", "night_id": "N20261006", "issued_at_utc": "2026-10-07T00:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S003", "night_id": "N20261006", "issued_at_utc": "2026-10-07T00:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S004", "night_id": "N20261006", "issued_at_utc": "2026-10-07T01:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S005", "night_id": "N20261006", "issued_at_utc": "2026-10-07T01:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S006", "night_id": "N20261006", "issued_at_utc": "2026-10-07T01:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S007", "night_id": "N20261006", "issued_at_utc": "2026-10-07T01:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S008", "night_id": "N20261006", "issued_at_utc": "2026-10-07T02:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S009", "night_id": "N20261006", "issued_at_utc": "2026-10-07T02:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S010", "night_id": "N20261006", "issued_at_utc": "2026-10-07T02:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S011", "night_id": "N20261006", "issued_at_utc": "2026-10-07T02:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S012", "night_id": "N20261006", "issued_at_utc": "2026-10-07T03:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S013", "night_id": "N20261006", "issued_at_utc": "2026-10-07T03:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S014", "night_id": "N20261006", "issued_at_utc": "2026-10-07T03:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S015", "night_id": "N20261006", "issued_at_utc": "2026-10-07T03:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S016", "night_id": "N20261006", "issued_at_utc": "2026-10-07T04:00:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S017", "night_id": "N20261006", "issued_at_utc": "2026-10-07T04:15:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S018", "night_id": "N20261006", "issued_at_utc": "2026-10-07T04:30:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S019", "night_id": "N20261006", "issued_at_utc": "2026-10-07T04:45:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S020", "night_id": "N20261006", "issued_at_utc": "2026-10-07T05:00:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S021", "night_id": "N20261006", "issued_at_utc": "2026-10-07T05:15:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S022", "night_id": "N20261006", "issued_at_utc": "2026-10-07T05:30:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S023", "night_id": "N20261006", "issued_at_utc": "2026-10-07T05:45:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S024", "night_id": "N20261006", "issued_at_utc": "2026-10-07T06:00:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S025", "night_id": "N20261006", "issued_at_utc": "2026-10-07T06:15:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S026", "night_id": "N20261006", "issued_at_utc": "2026-10-07T06:30:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S027", "night_id": "N20261006", "issued_at_utc": "2026-10-07T06:45:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S028", "night_id": "N20261006", "issued_at_utc": "2026-10-07T07:00:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S029", "night_id": "N20261006", "issued_at_utc": "2026-10-07T07:15:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S030", "night_id": "N20261006", "issued_at_utc": "2026-10-07T07:30:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S031", "night_id": "N20261006", "issued_at_utc": "2026-10-07T07:45:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S032", "night_id": "N20261006", "issued_at_utc": "2026-10-07T08:00:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S033", "night_id": "N20261006", "issued_at_utc": "2026-10-07T08:15:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261006-S034", "night_id": "N20261006", "issued_at_utc": "2026-10-07T08:30:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S001", "night_id": "N20261007", "issued_at_utc": "2026-10-08T00:15:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S002", "night_id": "N20261007", "issued_at_utc": "2026-10-08T00:30:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S003", "night_id": "N20261007", "issued_at_utc": "2026-10-08T00:45:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S004", "night_id": "N20261007", "issued_at_utc": "2026-10-08T01:00:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S005", "night_id": "N20261007", "issued_at_utc": "2026-10-08T01:15:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S006", "night_id": "N20261007", "issued_at_utc": "2026-10-08T01:30:00Z", "initial": false, "notices": [{"event_kind": "haze", "direction": "ALL"}, {"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S007", "night_id": "N20261007", "issued_at_utc": "2026-10-08T01:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S008", "night_id": "N20261007", "issued_at_utc": "2026-10-08T02:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S009", "night_id": "N20261007", "issued_at_utc": "2026-10-08T02:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S010", "night_id": "N20261007", "issued_at_utc": "2026-10-08T02:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S011", "night_id": "N20261007", "issued_at_utc": "2026-10-08T02:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S012", "night_id": "N20261007", "issued_at_utc": "2026-10-08T03:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S013", "night_id": "N20261007", "issued_at_utc": "2026-10-08T03:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S014", "night_id": "N20261007", "issued_at_utc": "2026-10-08T03:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S015", "night_id": "N20261007", "issued_at_utc": "2026-10-08T03:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S016", "night_id": "N20261007", "issued_at_utc": "2026-10-08T04:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S017", "night_id": "N20261007", "issued_at_utc": "2026-10-08T04:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S018", "night_id": "N20261007", "issued_at_utc": "2026-10-08T04:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S019", "night_id": "N20261007", "issued_at_utc": "2026-10-08T04:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S020", "night_id": "N20261007", "issued_at_utc": "2026-10-08T05:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S021", "night_id": "N20261007", "issued_at_utc": "2026-10-08T05:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S022", "night_id": "N20261007", "issued_at_utc": "2026-10-08T05:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S023", "night_id": "N20261007", "issued_at_utc": "2026-10-08T05:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S024", "night_id": "N20261007", "issued_at_utc": "2026-10-08T06:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S025", "night_id": "N20261007", "issued_at_utc": "2026-10-08T06:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S026", "night_id": "N20261007", "issued_at_utc": "2026-10-08T06:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S027", "night_id": "N20261007", "issued_at_utc": "2026-10-08T06:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S028", "night_id": "N20261007", "issued_at_utc": "2026-10-08T07:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S029", "night_id": "N20261007", "issued_at_utc": "2026-10-08T07:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S030", "night_id": "N20261007", "issued_at_utc": "2026-10-08T07:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S031", "night_id": "N20261007", "issued_at_utc": "2026-10-08T07:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S032", "night_id": "N20261007", "issued_at_utc": "2026-10-08T08:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S033", "night_id": "N20261007", "issued_at_utc": "2026-10-08T08:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261007-S034", "night_id": "N20261007", "issued_at_utc": "2026-10-08T08:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S001", "night_id": "N20261008", "issued_at_utc": "2026-10-09T00:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S002", "night_id": "N20261008", "issued_at_utc": "2026-10-09T00:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S003", "night_id": "N20261008", "issued_at_utc": "2026-10-09T00:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S004", "night_id": "N20261008", "issued_at_utc": "2026-10-09T01:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S005", "night_id": "N20261008", "issued_at_utc": "2026-10-09T01:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S006", "night_id": "N20261008", "issued_at_utc": "2026-10-09T01:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S007", "night_id": "N20261008", "issued_at_utc": "2026-10-09T01:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S008", "night_id": "N20261008", "issued_at_utc": "2026-10-09T02:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S009", "night_id": "N20261008", "issued_at_utc": "2026-10-09T02:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S010", "night_id": "N20261008", "issued_at_utc": "2026-10-09T02:30:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S011", "night_id": "N20261008", "issued_at_utc": "2026-10-09T02:45:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S012", "night_id": "N20261008", "issued_at_utc": "2026-10-09T03:00:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S013", "night_id": "N20261008", "issued_at_utc": "2026-10-09T03:15:00Z", "initial": false, "notices": [{"event_kind": "cold_snap", "direction": "ALL"}, {"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S014", "night_id": "N20261008", "issued_at_utc": "2026-10-09T03:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S015", "night_id": "N20261008", "issued_at_utc": "2026-10-09T03:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S016", "night_id": "N20261008", "issued_at_utc": "2026-10-09T04:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S017", "night_id": "N20261008", "issued_at_utc": "2026-10-09T04:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S018", "night_id": "N20261008", "issued_at_utc": "2026-10-09T04:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S019", "night_id": "N20261008", "issued_at_utc": "2026-10-09T04:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S020", "night_id": "N20261008", "issued_at_utc": "2026-10-09T05:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S021", "night_id": "N20261008", "issued_at_utc": "2026-10-09T05:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S022", "night_id": "N20261008", "issued_at_utc": "2026-10-09T05:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S023", "night_id": "N20261008", "issued_at_utc": "2026-10-09T05:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S024", "night_id": "N20261008", "issued_at_utc": "2026-10-09T06:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S025", "night_id": "N20261008", "issued_at_utc": "2026-10-09T06:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S026", "night_id": "N20261008", "issued_at_utc": "2026-10-09T06:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S027", "night_id": "N20261008", "issued_at_utc": "2026-10-09T06:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S028", "night_id": "N20261008", "issued_at_utc": "2026-10-09T07:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S029", "night_id": "N20261008", "issued_at_utc": "2026-10-09T07:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S030", "night_id": "N20261008", "issued_at_utc": "2026-10-09T07:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S031", "night_id": "N20261008", "issued_at_utc": "2026-10-09T07:45:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S032", "night_id": "N20261008", "issued_at_utc": "2026-10-09T08:00:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S033", "night_id": "N20261008", "issued_at_utc": "2026-10-09T08:15:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}
+{"record_type": "bulletin", "slot_id": "N20261008-S034", "night_id": "N20261008", "issued_at_utc": "2026-10-09T08:30:00Z", "initial": false, "notices": [{"event_kind": "earthquake", "direction": "ALL"}]}

@@ -1,0 +1,3 @@
+[local-runner] entry=baseline_agent.py card=s_short dotenv_keys=[]
+baseline: 2400 targets, 120 required, 8 nights; init 0.01s; llm=off
+baseline finished: termination_reason=survey_complete observes=161 reports=0

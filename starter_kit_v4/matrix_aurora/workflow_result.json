@@ -1,0 +1,59 @@
+{
+  "accounted_wallclock_seconds": 3.53,
+  "agent_wallclock_seconds": 2.641,
+  "committed_action_count": 366,
+  "decision_requests": 265,
+  "global_wallclock_seconds": 900.0,
+  "ignored_in_flight_response": false,
+  "last_decision_sequence": 265,
+  "protocol_version": "participant-agent-protocol-v4",
+  "scenario": "s_short",
+  "schema_version": "v4-workflow-result-v1",
+  "score_report": {
+    "by_class": {
+      "BGS": 162.389619,
+      "ELG": 594.306998,
+      "LRG": 274.487164,
+      "QSO": 247.791573,
+      "Star": 35.38721
+    },
+    "components": {
+      "report_settlement": 0.0,
+      "required_penalty": -0.0,
+      "sum_best_scores": 1314.362566,
+      "uniformity_penalty": -4.467787
+    },
+    "counts": {
+      "decisions": 366,
+      "invalidated_observations": 0,
+      "observations": 3052,
+      "observe_actions": 248,
+      "required_missing": 0,
+      "targets_observed": 1936
+    },
+    "invalidations": [],
+    "scenario": "s_short",
+    "schema_version": "v4-score-report-v1",
+    "sha256": {
+      "decisions": "d39a33e7ed01ce3cf80b9a49090d2b950bae114d5b4422bb46f7534131fc5bdd",
+      "messages": "983e32823e100798ace23f780abf351fef95debae9995771daa09e93b82bce21",
+      "observations": "5f49c2b97a928fb2482518e679623b8bfaa030f5ec80f7fdd8530ca50d6a0a3c",
+      "scenario": "d01c52f4c23a6e5b4f1eefd8cf8cf7df5d0e6ebc88350665e44bf43ff0d48696"
+    },
+    "termination": {
+      "detail": "",
+      "reason": "survey_complete"
+    },
+    "total": 1309.894779,
+    "uniformity_bands": {
+      "ra_10_20": 0.526316,
+      "ra_20_30": 0.513514,
+      "ra_30_40": 0.453376,
+      "ra_340_350": 0.666667,
+      "ra_350_360": 0.670455,
+      "ra_40_50": 0.496094
+    }
+  },
+  "termination_detail": "",
+  "termination_reason": "survey_complete"
+}
