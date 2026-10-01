@@ -122,7 +122,7 @@ class BaselineAgent:
 
     def _night_advice(self, night_start, payload: dict) -> None:
         self.planner.extra_avoid = set()
-        self.planner.duration_scale = 1.0
+        self.planner.duration_scale = self.planner.base_duration_scale
         if not self.advisor.enabled or not self.advisor.night_plan_on:
             return
         night_date = (night_start - timedelta(hours=12)).date().isoformat()

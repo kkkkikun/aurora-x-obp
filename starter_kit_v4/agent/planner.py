@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import bisect
 import math
+import os
 from collections import deque
 from datetime import datetime, timedelta
 
@@ -50,6 +51,12 @@ UNIF_BOOST = 0.8                # priority boost per unit RA-band completion def
 SKY_MEMORY_HOURS = 2.0         # forget sky-quality samples older than this (in survey time)
 MIN_VISIBLE_SECONDS = 600
 NEIGHBOUR_RADIUS_DEG = 2.1
+CALIB_MIN_SAMPLES = 60         # pointing-offset calibration: samples before first estimate
+CALIB_REESTIMATE = 40          # re-estimate after this many new samples
+CALIB_STEP_DEG = 0.01          # grid step of the offset search (local tangent plane)
+CALIB_MAX_DEG = 0.18           # search radius (Hard-mode offsets are ~0.1 deg)
+CALIB_MIN_MAG = 0.03           # minimum offset magnitude worth compensating
+CALIB_MIN_GAIN = 0.10          # required relative consistency gain over zero-offset
 ANCHORS = 4                   # widened for long seasons (short cards keep 3, see __init__)
 ANCHOR_POOL = 220             # top-ranked candidates checked for what they can still gain tonight
 ANCHORS_MIN_NIGHTS = 14       # a 4th anchor delays required work on short seasons: measured -112
@@ -121,7 +128,15 @@ class Planner:
         self.notices: set[tuple[str, str]] = set()
         self.terrain: set[str] = set()
         self.extra_avoid: set[str] = set()       # directions an advisor asked to avoid tonight
-        self.duration_scale = 1.0
+        self._calib_samples: list[tuple[float, float, int, bool]] = []   # (dn, de, fiber, hit)
+        self._calib_since = 0
+        self.pointing_corr: tuple[float, float] | None = None   # estimated (d_north, d_east) of actual-vs-commanded
+        # env 旋钮是实验入口（P1-1 时长-覆盖扫描）；LLM/规则每夜重置到这个 base
+        try:
+            self.base_duration_scale = max(0.3, min(2.0, float(os.environ.get("AURORA_DURATION_SCALE", "1.0") or 1.0)))
+        except ValueError:
+            self.base_duration_scale = 1.0
+        self.duration_scale = self.base_duration_scale
         self.fast_level = 0
         self.band_width = float(score["uniformity"]["ra_band_width_deg"])
         self.band_totals: dict[int, int] = {}
@@ -232,6 +247,10 @@ class Planner:
             score = hits.get(target_id)
             if score is None:
                 self.misses[i] += 1  # a miss: the target did not land on its fibre glass
+                pred = self.pending.get(target_id) or {}
+                if "fiber" in pred:
+                    self._calib_samples.append((pred["dn"], pred["de"], pred["fiber"], False))
+                    self._calib_since += 1
                 continue
             if score <= 0.0:
                 if any_positive:
@@ -253,6 +272,10 @@ class Planner:
             factor = factor_if_match if matched else factor_if_miss
             before = self.factor[i]
             self.factor[i] = max(self.factor[i], min(1.0, factor))
+            pred = self.pending.get(target_id) or {}
+            if "fiber" in pred:
+                self._calib_samples.append((pred["dn"], pred["de"], pred["fiber"], True))
+                self._calib_since += 1
             if before < 0.5 <= self.factor[i]:
                 b = int(self.ra[i] // self.band_width)
                 self.band_half[b] = self.band_half.get(b, 0) + 1
@@ -340,6 +363,43 @@ class Planner:
             return False
         return sorted(fresh)[len(fresh) // 2] < self.era_ratchet * margin
 
+    def _calibrate_pointing(self) -> None:
+        """Estimate a fixed commanded-vs-actual pointing offset from fibre hit/miss geometry.
+
+        For candidate offset (dn, de): a target's predicted local position is its commanded
+        position minus the offset; hits must land inside the assigned glass (score +1),
+        misses must fall outside it (score +1 when consistent). Grid search, then activate
+        only on strong, sizeable evidence (a real Hard-mode offset lifts consistency a lot)."""
+        if self.pointing_corr is not None or len(self._calib_samples) < CALIB_MIN_SAMPLES:
+            return
+        samples = self._calib_samples[-400:]
+        best_off, best_score = (0.0, 0.0), None
+        steps = int(CALIB_MAX_DEG / CALIB_STEP_DEG)
+        n = steps * 2 + 1
+        for a in range(n):
+            dn = (a - steps) * CALIB_STEP_DEG
+            for b in range(n):
+                de = (b - steps) * CALIB_STEP_DEG
+                score = 0.0
+                for dn0, de0, fiber, hit in samples:
+                    row, col = divmod(fiber, 4)
+                    half = 2.0 * 0.632456 / 2.0
+                    lo_n = (row - 2) * 0.632456
+                    lo_e = (col - 2) * 0.632456
+                    inside = (lo_n <= dn0 - dn < lo_n + 0.632456) and (lo_e <= de0 - de < lo_e + 0.632456)
+                    score += 1.0 if inside == hit else -1.0
+                if best_score is None or score > best_score:
+                    best_score, best_off = score, (dn, de)
+        zero_score = sum(1.0 if (((int(f / 4) - 2) * 0.632456 <= dn0 < (int(f / 4) - 1) * 0.632456)
+                                 and ((f % 4 - 2) * 0.632456 <= de0 < (f % 4 - 1) * 0.632456)) == hit else -1.0
+                         for dn0, de0, f, hit in samples)
+        mag = math.hypot(*best_off)
+        gain = (best_score - zero_score) / max(1, len(samples))
+        if mag >= CALIB_MIN_MAG and gain >= CALIB_MIN_GAIN:
+            self.pointing_corr = best_off
+            self.log(f"pointing offset estimated ({best_off[0]:+.3f}, {best_off[1]:+.3f}) deg, "
+                     f"consistency gain {gain:.2f} over {len(samples)} samples")
+
     def forget_quality_history(self) -> None:
         """After a report, start the quality estimates afresh (the level may change)."""
         self.clean_history = []
@@ -396,6 +456,10 @@ class Planner:
         """Return an observe action dict, or None when nothing useful is up."""
         self.update_scale(hours)
         self.night_index = night_index
+        if self._calib_since >= CALIB_REESTIMATE or (self.pointing_corr is None
+                and len(self._calib_samples) >= CALIB_MIN_SAMPLES and self._calib_since == 0):
+            self._calibrate_pointing()
+            self._calib_since = 0
         lst = local_sidereal_deg(now, self.lon)
         horizon = min(night_end, self.survey_end)
         seconds_left = (horizon - now).total_seconds()
@@ -507,6 +571,9 @@ class Planner:
         if best is None:
             return None
         _, c_alt, c_az, chosen = best
+        if self.pointing_corr is not None:
+            c_alt, c_az = shift_altaz(c_alt, c_az, -self.pointing_corr[0], -self.pointing_corr[1])
+            c_alt, c_az = round(c_alt, 4), round(c_az, 4) % 360.0
         return self._finish_plan(now, lst, c_alt, c_az, chosen, seconds_left, moon, altaz, hours)
 
     def _finish_plan(self, now, lst, c_alt, c_az, chosen, seconds_left, moon, altaz, hours):
@@ -571,8 +638,10 @@ class Planner:
         self.pending = {}
         for fiber, item in info.items():
             if str(fiber) in assignments:
+                off = tangent_offsets(item["alt"], item["az"], c_alt, c_az) or (0.0, 0.0)
                 self.pending[self.ids[item["i"]]] = {
                     "model": item["model"], "band_model": item["model"] / 0.95, "alt": item["alt"], "az": item["az"],
+                    "dn": off[0], "de": off[1], "fiber": int(fiber),
                     "clean": clean and self._direction_factor(item["alt"], item["az"]) >= 1.0}
         self.pending_program = program
         self.pending_duration = duration
