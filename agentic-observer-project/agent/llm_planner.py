@@ -19,7 +19,9 @@
      = 无 LLM 版本。
   3. 调用预算：每夜 ≤1 次规划 + 异常事件 ≤3 次重规划（全局墙钟 3600s 内
      30 夜 × ~1-2s 完全可承受；AURORA_LLM_BUDGET 可再压）。
-  4. AURORA_LLM_PROVIDER 未设置时整层惰性（零调用、零行为差异）。
+  4. AURORA_LLM_PROVIDER 未设置且平台未注入 OPENAI_BASE_URL/OPENAI_API_KEY 时整层惰性
+     （零调用、零行为差异）；参赛页配置模型后自动经平台通道启用。
+  5. 墙钟守卫：SAC_WALLCLOCK_SECONDS 已耗超 35% 时整层停手，绝不挤占观测计算。
 
 配置（agent/.env 或平台环境变量）：
   AURORA_LLM_PROVIDER   例 moonshot / openai / anthropic（缺省 = 关闭）
@@ -44,6 +46,21 @@ PROVIDER_DEFAULTS = {
     "anthropic": ("claude-3-5-haiku-latest", "", "ANTHROPIC_API_KEY"),
 }
 
+_WALLCLOCK_START = time.monotonic()
+
+
+def _wallclock_guard_open() -> bool:
+    """平台/本地 runner 都会设 SAC_WALLCLOCK_SECONDS。LLM 只许花墙钟的一小部分：
+    已耗时超过预算的 35%，或剩余不足以安全完成一次调用时，整层停手。"""
+    try:
+        total = float(os.environ.get("SAC_WALLCLOCK_SECONDS", "") or 0)
+    except ValueError:
+        total = 0.0
+    if total <= 0:
+        return True                      # 无预算信息（不应发生）：不设防等于原行为
+    elapsed = time.monotonic() - _WALLCLOCK_START
+    return elapsed < total * 0.35
+
 _STATE = {
     "client": None,        # 惰性构建的 (call_fn, model_name)
     "night_done": set(),   # 已规划过的夜
@@ -60,10 +77,10 @@ def _env(name, default=""):
 def _budget_left():
     budget = 40
     try:
-        budget = int(_env("AURORA_LLM_BUDGET", "40"))
+        budget = int(_env("AURORA_LLM_BUDGET", "64"))
     except ValueError:
         pass
-    return budget - _STATE["calls"] > 0
+    return budget - _STATE["calls"] > 0 and _wallclock_guard_open()
 
 
 def _client():
@@ -71,14 +88,24 @@ def _client():
     if _STATE["client"] is not None:
         return _STATE["client"][0]
     provider = _env("AURORA_LLM_PROVIDER")
-    if not provider or not _budget_left():
+    if provider:
+        model, base_url, key_env = PROVIDER_DEFAULTS.get(provider, ("", "", ""))
+        model = _env("AURORA_LLM_MODEL") or model
+        base_url = _env("AURORA_LLM_BASE_URL") or base_url
+        key = _env("AURORA_LLM_KEY") or _env(key_env)
+    else:
+        # 平台通道：参赛页配置模型后，平台向 agent 进程注入 OPENAI_BASE_URL / OPENAI_API_KEY
+        #（模型名经占位符 team-model 映射到队伍配置）。没有注入 = 整层保持惰性。
+        base_url = _env("OPENAI_BASE_URL")
+        key = _env("OPENAI_API_KEY")
+        model = _env("OPENAI_MODEL") or _env("MODEL_NAME") or ("team-model" if base_url and key else "")
+        if not (base_url and key):
+            _STATE["client"] = (None, "")
+            return None
+    if not _budget_left():
         _STATE["client"] = (None, "")
         return None
-    model, base_url, key_env = PROVIDER_DEFAULTS.get(provider, ("", "", ""))
-    model = _env("AURORA_LLM_MODEL") or model
-    base_url = _env("AURORA_LLM_BASE_URL") or base_url
-    key = _env("AURORA_LLM_KEY") or _env(key_env)
-    if not model or not key:
+    if not model or not key or not base_url:
         _STATE["client"] = (None, "")
         return None
     import urllib.request
@@ -100,7 +127,7 @@ def _client():
             data=json.dumps(body).encode("utf-8"),
             headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
         )
-        with urllib.request.urlopen(req, timeout=12) as resp:
+        with urllib.request.urlopen(req, timeout=25) as resp:
             data = json.loads(resp.read().decode("utf-8"))
         _STATE["calls"] += 1
         return data["choices"][0]["message"]["content"]
@@ -154,17 +181,28 @@ def _validate_plan(plan, known_tiles, known_regions):
     return out or None
 
 
+def _dbg(msg):
+    if os.environ.get("AURORA_LLM_DEBUG"):
+        print(f"llm-planner skip: {msg}", file=sys.stderr, flush=True)
+
+
 def night_plan(snapshot, memory, known_tiles, known_regions):
     """任务规划：夜初调用。返回校验后的计划 dict（或 None=不干预）。"""
     if not _budget_left():
+        _dbg("budget/guard closed")
         return None
     cursor = (snapshot.get("cursor") or {})
     night = cursor.get("night_id") or ""
     if not night or night in _STATE["night_done"]:
+        _dbg(f"night={night!r} dup={night in _STATE['night_done']} done_n={len(_STATE['night_done'])}")
         return None
     _STATE["night_done"].add(night)
+    if _STATE["failures"] >= 5:
+        _dbg("circuit breaker open (5 failures)")
+        return None
     call = _client()
     if call is None:
+        _dbg("client is None (env missing or cached miss)")
         return None
     try:
         progress = snapshot.get("progress") or {}

@@ -113,6 +113,7 @@ _S = {
     "slot_seconds": None,          # v6.8: 时隙长度（initial_publication.calendar）
     "night_windows_req": {},       # v6.8: 当夜 REQUIRED 窗口 tile_id -> [{ws,we,ex}]
     "night_windows_for": None,     # v6.8: 上述缓存所属 night_id
+    "llm_night_for": None,         # LLM 夜计划已规划到的 night_id（每夜 ≤1 次）
     "future_windows": {},          # v6.8: weekly 已知未来窗口 tile_id -> [(night_id, ws, we, ex)]
     "night_windows_meta": {},      # v6.11: 当夜全类别窗口 tile_id -> [(ws, we, best_time, best_am)]
     "v": {},              # tile_id -> tile_science_value（首拍时学习）
@@ -314,7 +315,7 @@ _ad.AnomalyDetector.__init__ = _detector_init_hook
 
 # ---------------- v6.8 REQUIRED 末班车游标预留 ----------------
 
-def _harvest_publications(snapshot):
+def _harvest_publications(snapshot, memory):
     """从 night_start / weekly 发布里缓存窗口知识（只存 REQUIRED，量小且够用）。"""
     cursor = snapshot.get("cursor") or {}
     night = cursor.get("night_id")
@@ -344,17 +345,20 @@ def _harvest_publications(snapshot):
             _S["night_windows_req"] = cache_req
             _S["night_windows_meta"] = cache_meta
             _S["night_windows_for"] = night
-        # LLM 任务规划（每夜 ≤1 次；无 AURORA_LLM_PROVIDER 时整层惰性零行为差异）
+    # LLM 任务规划：每夜首次决策触发（cursor.night_id 变化即触发，与 night_start 发布
+    # 与否解耦——实测 dev-fortnight 的 night_start 只在前几夜出现）。无平台注入凭据时
+    # llm_planner 整层惰性，零调用零行为差异。
+    if _lp is not None and night and _S.get("llm_night_for") != night:
+        _S["llm_night_for"] = night
         try:
-            if _lp is not None:
-                tiles_known = set(_S.get("tile_avail") or {})
-                regions_known = set(_S.get("regions") or set())
-                if not regions_known:
-                    regions_known = {t.region_id for t in _S.get("tile_objs", [])} or None
-                if tiles_known and regions_known:
-                    plan = _lp.night_plan(snapshot, memory, tiles_known, regions_known)
-                    if plan:
-                        memory["plan"] = plan
+            tiles_known = set(_S.get("tile_avail") or {})
+            regions_known = set(_S.get("regions") or set())
+            if not regions_known:
+                regions_known = {t.region_id for t in _S.get("tile_objs", [])} or None
+            if tiles_known and regions_known:
+                plan = _lp.night_plan(snapshot, memory, tiles_known, regions_known)
+                if plan:
+                    memory["plan"] = plan
         except Exception as exc:  # noqa: BLE001  规划失败只丢计划，绝不影响决策流
             print(f"llm night-plan fallback after {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
     weekly = snapshot.get("weekly")
@@ -813,8 +817,27 @@ def _choose_quality(candidates, snapshot, memory, reserve_ctx, reserve_fit_rem, 
                   if float(c["nominal_exptime_seconds"] or 0.0) <= reserve_fit_rem + 0.5]
         if fitted:
             pool = fitted
+    # LLM 夜计划加权：只在已通过质量门的 pool 内起作用（priority/focus 提升排序偏好、
+    # avoid 在有替代时剔除）——计划永远不能绕过质量门，只能决定「门内谁先拍」。
+    plan = memory.get("plan") or {}
+    rev = memory.get("plan_revision") or {}
+    prio_ids = {str(t) for t in (plan.get("priority_tiles") or [])} | {str(t) for t in (rev.get("boost_tiles") or [])}
+    focus_regions = {str(r) for r in (plan.get("focus_regions") or [])} | {str(r) for r in (rev.get("focus_regions") or [])}
+    avoid_regions = {str(r) for r in (rev.get("avoid_regions") or [])}
+    if avoid_regions:
+        kept = [c for c in pool if str(c.get("region_id")) not in avoid_regions]
+        if kept:
+            pool = kept
+
+    def _plan_boost(c) -> float:
+        if str(c["tile_id"]) in prio_ids:
+            return 0.15
+        if str(c.get("region_id")) in focus_regions:
+            return 0.06
+        return 0.0
+
     if (_env_str("AURORA_PICK", "rel") or "rel").lower() == "rel":
-        pick = max(pool, key=lambda c: (c.get("_q_rel", 0.0),
+        pick = max(pool, key=lambda c: (c.get("_q_rel", 0.0) + _plan_boost(c),
                                         c.get("estimated_gain_per_second") or 0.0))
     else:
         pick = max(pool, key=lambda c: (c.get("estimated_gain_per_second") or 0.0,
@@ -868,7 +891,7 @@ def choose_action(candidates, snapshot, memory):
     reserve_ctx = None          # (now, slot_start, slot_dur) 当夜缓存可用时用于 last_chance 判定
     reserve_night = (snapshot.get("cursor") or {}).get("night_id")
     try:
-        _harvest_publications(snapshot)
+        _harvest_publications(snapshot, memory)
     except Exception as exc:  # noqa: BLE001
         print(f"pub-harvest fallback after {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
     try:
